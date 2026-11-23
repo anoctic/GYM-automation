@@ -21,12 +21,12 @@ import { kioskToggleCheckInOut } from "../src/actions/kiosk";
 async function run() {
   console.log("Testing Kiosk Check-In & Check-Out...");
   
-  // Test check-in for AF-1003 (Amit Verma)
-  const res1 = await kioskToggleCheckInOut("anytime-fitness-sikandrab", "1003");
-  console.log("Result 1 (Check-in or Check-out):", res1.action, res1.member?.full_name, res1.durationText || "");
+  // Test check-in for FP-93 (Kapil Bhati)
+  const res1 = await kioskToggleCheckInOut("fitness-planet-sikandrabad", "93");
+  console.log("Result 1:", res1);
 
   // Toggle again to check out or back
-  const res2 = await kioskToggleCheckInOut("anytime-fitness-sikandrab", "AF-1003");
+  const res2 = await kioskToggleCheckInOut("fitness-planet-sikandrabad", "FP-93");
   console.log("Result 2 (Toggle):", res2.action, res2.member?.full_name, res2.durationText || "");
 
   console.log("Kiosk test completed successfully!");
