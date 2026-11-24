@@ -56,13 +56,12 @@ export function Sidebar({
   const navItems = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Members", href: "/members", icon: Users },
-    { name: "Payments & Dues", href: "/payments", icon: CreditCard },
-    { name: "Floor Attendance", href: "/attendance", icon: Activity, badge: "LIVE" },
-    { name: "Membership Plans", href: "/plans", icon: Dumbbell },
-    { name: "Admissions", href: "/admissions", icon: UserCheck },
+    { name: "Fees & Dues", href: "/payments", icon: CreditCard },
     { name: "CRM Leads", href: "/leads", icon: Target },
+    { name: "Floor Attendance", href: "/attendance", icon: Activity, badge: "LIVE" },
+    { name: "Plans", href: "/plans", icon: Dumbbell },
     { name: "WhatsApp Outreach", href: "/outreach", icon: MessageCircle },
-    { name: "Settings & Admin", href: "/settings", icon: Settings },
+    { name: "More & Settings", href: "/more", icon: Settings },
   ];
 
   return (
@@ -152,9 +151,9 @@ export function Sidebar({
                 key={item.name}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition group ${
+                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition group ${
                   isActive
-                    ? "bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30"
+                    ? "bg-[var(--obsidian)] text-white dark:bg-[var(--lime)] dark:text-[var(--obsidian)] shadow-xs"
                     : "text-muted-theme hover:text-main hover:bg-surface"
                 }`}
               >
@@ -162,7 +161,7 @@ export function Sidebar({
                   <Icon
                     className={`w-4 h-4 transition-colors ${
                       isActive
-                        ? "text-emerald-400"
+                        ? "text-white dark:text-[var(--obsidian)]"
                         : "text-muted-theme group-hover:text-main"
                     }`}
                   />

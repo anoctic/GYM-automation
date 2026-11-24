@@ -72,6 +72,7 @@ export function DashboardClient({
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
   const [isCollectModalOpen, setIsCollectModalOpen] = useState(false);
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+  const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
@@ -221,154 +222,228 @@ export function DashboardClient({
         </div>
       )}
 
-      {/* 1. HERO BANNER: iOS Liquid Glass Frosted Card with Curved Gold Accent + Large Floating 3D Logo */}
-      <div className="relative overflow-hidden rounded-3xl bg-white/75 dark:bg-gradient-to-br dark:from-[#06080e] dark:via-[#090d16] dark:to-[#0d121e] border border-white/80 dark:border-amber-500/20 backdrop-blur-2xl p-6 sm:p-8 lg:p-10 shadow-lg dark:shadow-2xl">
-        {/* Intense Warm Golden-Amber Ambient Radial Glow Behind Logo */}
-        <div className="absolute top-1/2 -translate-y-1/2 -right-8 w-96 h-96 bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-transparent rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 left-1/3 w-80 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
-
-        {/* Curved Golden Accent Wave Across Bottom */}
-        <svg
-          className="absolute bottom-0 left-0 right-0 w-full h-12 pointer-events-none opacity-40 overflow-visible"
-          viewBox="0 0 1200 60"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M 0 45 C 300 20, 600 55, 900 25 C 1050 10, 1150 35, 1200 20"
-            stroke="url(#heroGoldLine)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <defs>
-            <linearGradient id="heroGoldLine" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#d97706" stopOpacity="0.1" />
-              <stop offset="30%" stopColor="#f59e0b" stopOpacity="0.8" />
-              <stop offset="70%" stopColor="#fbbf24" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#d97706" stopOpacity="0.2" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <div className="space-y-4 max-w-xl">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
-              <span>Welcome back, Kapil!</span>
-              <span className="inline-block text-3xl sm:text-4xl">👋</span>
-            </h1>
-
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-normal leading-relaxed">
-              Manage your gym, members, payments and growth all in one place.
-            </p>
-
-            {/* 5 Status Pills (Liquid Glass Frosted Pills) */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-2 text-xs">
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
-                <Users className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                <span>{totalCount} Total Members</span>
-              </span>
-
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-                <span>{activeCount} Active</span>
-              </span>
-
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
-                <Sparkles className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />
-                <span>{trialCount} Trials</span>
-              </span>
-
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
-                <PauseCircle className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
-                <span>{frozenCount} Frozen</span>
-              </span>
-
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/10 dark:bg-[#111622] border border-amber-300/70 dark:border-amber-900/50 text-amber-900 dark:text-amber-300 font-semibold shadow-xs">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-                <span>{withDuesCount} With Dues</span>
-              </span>
-            </div>
+      {/* 1. DARK OBSIDIAN COLLECTION HERO CARD (Matching Video & Prototype) */}
+      <Link href="/payments" className="block">
+        <div className="hero-collection-card relative overflow-hidden group">
+          <div className="flex justify-between items-center">
+            <span className="text-[13px] text-slate-400 font-semibold flex items-center gap-1.5">
+              <span>₹ Today&apos;s collection</span>
+            </span>
+            <span className="text-slate-400 text-base font-bold group-hover:translate-x-1 transition-transform">›</span>
           </div>
 
-          {/* Right: High-Res 3D Emblem Logo with Warm Halo */}
-          <div className="relative flex items-center justify-center shrink-0">
-            {/* Ambient Halo */}
-            <div className="absolute w-56 h-56 sm:w-64 sm:h-64 rounded-full bg-amber-500/20 blur-2xl pointer-events-none" />
-            <div className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-64 flex items-center justify-center group hover:scale-105 transition-transform duration-300">
-              <img
-                src={gym?.logo_url || "/fitness-planet-logo.png"}
-                alt="Fitness Planet Unisex Gym Logo"
-                className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(245,158,11,0.3)]"
-              />
+          <div className="text-3xl sm:text-4xl lg:text-5xl font-black mt-2 tracking-tight text-white">
+            {formatCurrency(financials.totalRevenue)}
+          </div>
+
+          <div className="collection-split">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[var(--lime)] inline-block" />
+              <span className="text-slate-400 font-normal">Online</span>
+              <strong className="text-white">{formatCurrency(financials.upiTotal + financials.bankTotal)}</strong>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-slate-400 inline-block" />
+              <span className="text-slate-400 font-normal">Cash</span>
+              <strong className="text-white">{formatCurrency(financials.cashTotal)}</strong>
+            </span>
+          </div>
+        </div>
+      </Link>
+
+      {/* 2. 4 MINI KPI CARDS (Matching Video Grid) */}
+      <div className="grid grid-cols-4 gap-2 sm:gap-2.5">
+        <Link href="/members" className="mini-stat block cursor-pointer">
+          <div className="num text-[#16A34A]">{members.length}</div>
+          <div className="lbl">Admission</div>
+        </Link>
+        <Link href="/members" className="mini-stat block cursor-pointer">
+          <div className="num text-[#2563EB]">{activeCount}</div>
+          <div className="lbl">Renewal</div>
+        </Link>
+        <Link href="/leads" className="mini-stat block cursor-pointer">
+          <div className="num text-[#D97706]">{leads.length}</div>
+          <div className="lbl">Enquiry</div>
+        </Link>
+        <Link href="/payments" className="mini-stat block cursor-pointer">
+          <div className="num text-[#7C3AED]">{recentPayments.length}</div>
+          <div className="lbl">Due paid</div>
+        </Link>
+      </div>
+
+      {/* 3. SETUP PROGRESS BANNER (Matching Video) */}
+      <Link href="/more" className="block">
+        <div className="setup-banner group">
+          <div className="flex items-center gap-3">
+            <div className="setup-check-circle">✓</div>
+            <div>
+              <div className="text-sm font-bold text-main">Set up your gym • 3/5</div>
+              <div className="text-xs text-muted-theme">Complete the remaining steps</div>
             </div>
           </div>
+          <span className="text-muted-theme text-lg font-bold group-hover:translate-x-1 transition-transform">›</span>
+        </div>
+      </Link>
+
+      {/* 4. 3 PASTEL STATUS CARDS (Matching Video) */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+        <Link href="/payments" className="mini-stat pastel-red block cursor-pointer">
+          <div className="text-sm mb-1">💳</div>
+          <div className="num">{withDuesCount}</div>
+          <div className="lbl opacity-85">Overdue</div>
+        </Link>
+
+        <Link href="/members" className="mini-stat pastel-amber block cursor-pointer">
+          <div className="text-sm mb-1">🕒</div>
+          <div className="num">{expiringMembers.length}</div>
+          <div className="lbl opacity-85">Expiring</div>
+        </Link>
+
+        <Link href="/attendance" className="mini-stat pastel-blue block cursor-pointer">
+          <div className="text-sm mb-1">✅</div>
+          <div className="num">{activeSessions.length}</div>
+          <div className="lbl opacity-85">Attendance</div>
+        </Link>
+      </div>
+
+      {/* 5. 2 ROW: REPORTS & APPROVALS */}
+      <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+        <Link href="/payments" className="mini-stat block cursor-pointer py-3.5 px-3">
+          <div className="text-base mb-1">📈</div>
+          <div className="text-[13.5px] font-bold text-main">Reports</div>
+        </Link>
+        <div className="mini-stat py-3.5 px-3">
+          <div className="num text-main">0</div>
+          <div className="lbl">Approvals pending</div>
         </div>
       </div>
 
-      {/* 2. QUICK ACTIONS SECTION */}
+      {/* 6. RECENT TRANSACTIONS (Matching Video) */}
       <div className="space-y-2.5">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          Quick Actions
-        </h2>
-
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* + Enroll Member (Emerald primary pill) */}
-          <Link
-            href="/members"
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-700/20 active:scale-95 transition group"
-          >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Enroll Member</span>
+        <div className="flex justify-between items-center">
+          <h3 className="text-base font-extrabold text-main">Recent transactions</h3>
+          <Link href="/payments" className="text-xs font-bold text-muted-theme hover:text-main">
+            See all
           </Link>
-
-          {/* + Add Trial */}
-          <button
-            onClick={() => {
-              setIsLeadModalOpen(true);
-              setLeadStage("trial_booked");
-            }}
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-white/80 dark:bg-[#111622] hover:bg-white dark:hover:bg-[#182030] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 font-bold text-xs shadow-xs active:scale-95 transition"
-          >
-            <Plus className="w-4 h-4 text-purple-500 dark:text-purple-400 stroke-[2.5]" />
-            <span>Add Trial</span>
-          </button>
-
-          {/* ₹ Collect Payment */}
-          <button
-            onClick={() => {
-              setIsCollectModalOpen(true);
-              const mWithDues = members.find((m) => Number(m.pending_dues) > 0);
-              if (mWithDues) {
-                setCollectMemberId(mWithDues.id);
-                setCollectAmount(Number(mWithDues.pending_dues));
-              }
-            }}
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-white/80 dark:bg-[#111622] hover:bg-white dark:hover:bg-[#182030] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 font-bold text-xs shadow-xs active:scale-95 transition"
-          >
-            <IndianRupee className="w-4 h-4 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
-            <span>Collect Payment</span>
-          </button>
-
-          {/* 💬 Send WhatsApp */}
-          <Link
-            href="/outreach"
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-white/80 dark:bg-[#111622] hover:bg-white dark:hover:bg-[#182030] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 font-bold text-xs shadow-xs active:scale-95 transition"
-          >
-            <MessageCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
-            <span>Send WhatsApp</span>
-          </Link>
-
-          {/* 🗓️ Floor Check In */}
-          <button
-            onClick={() => setIsCheckInModalOpen(true)}
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-white/80 dark:bg-[#111622] hover:bg-white dark:hover:bg-[#182030] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 font-bold text-xs shadow-xs active:scale-95 transition"
-          >
-            <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
-            <span>Floor Check In</span>
-          </button>
         </div>
+
+        {recentPayments.length === 0 ? (
+          <div className="card text-center text-muted-theme text-sm py-6">
+            No payments yet.
+          </div>
+        ) : (
+          <div className="card divide-y divide-theme p-0 overflow-hidden">
+            {recentPayments.slice(0, 5).map((p) => (
+              <div key={p.id} className="flex justify-between items-center px-4 py-3">
+                <div>
+                  <div className="font-bold text-sm text-main">
+                    {p.members?.full_name || "Gym Member"}
+                  </div>
+                  <div className="text-[11.5px] text-muted-theme">
+                    {p.payment_method} • {formatDate(p.paid_at || p.created_at)}
+                  </div>
+                </div>
+                <div className="font-extrabold text-[#16A34A] text-sm font-mono-code">
+                  +{formatCurrency(p.amount)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* 7. FLOATING ACTION BUTTON (+) WITH QUICK ACTION SHEET */}
+      <button
+        onClick={() => setIsFabMenuOpen(!isFabMenuOpen)}
+        className="fab-btn select-none"
+        title="Quick Add"
+        aria-label="Quick Add"
+      >
+        <span className={`transition-transform duration-200 inline-block ${isFabMenuOpen ? "rotate-45" : ""}`}>
+          +
+        </span>
+      </button>
+
+      {/* Quick Action Bottom Sheet (when FAB is clicked) */}
+      {isFabMenuOpen && (
+        <div
+          onClick={() => setIsFabMenuOpen(false)}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-[#14161A] text-main rounded-3xl p-5 w-full max-w-sm space-y-3 shadow-2xl border border-theme animate-in slide-in-from-bottom-6"
+          >
+            <div className="flex justify-between items-center pb-2 border-b border-theme">
+              <h3 className="font-extrabold text-base">Quick Actions</h3>
+              <button
+                onClick={() => setIsFabMenuOpen(false)}
+                className="w-7 h-7 rounded-full border border-theme flex items-center justify-center text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 pt-1">
+              <Link
+                href="/members"
+                onClick={() => setIsFabMenuOpen(false)}
+                className="flex items-center gap-3 p-3 rounded-2xl bg-surface hover:bg-surface-hover font-bold text-xs text-main border border-theme transition"
+              >
+                <div className="w-8 h-8 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center font-bold">
+                  ➕
+                </div>
+                <span>Enroll New Member</span>
+              </Link>
+
+              <button
+                onClick={() => {
+                  setIsFabMenuOpen(false);
+                  setIsLeadModalOpen(true);
+                  setLeadStage("trial_booked");
+                }}
+                className="flex items-center gap-3 p-3 rounded-2xl bg-surface hover:bg-surface-hover font-bold text-xs text-main border border-theme text-left transition"
+              >
+                <div className="w-8 h-8 rounded-full bg-purple-500/15 text-purple-600 flex items-center justify-center font-bold">
+                  🎯
+                </div>
+                <span>Add Trial / CRM Lead</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsFabMenuOpen(false);
+                  setIsCollectModalOpen(true);
+                  const mWithDues = members.find((m) => Number(m.pending_dues) > 0);
+                  if (mWithDues) {
+                    setCollectMemberId(mWithDues.id);
+                    setCollectAmount(Number(mWithDues.pending_dues));
+                  }
+                }}
+                className="flex items-center gap-3 p-3 rounded-2xl bg-surface hover:bg-surface-hover font-bold text-xs text-main border border-theme text-left transition"
+              >
+                <div className="w-8 h-8 rounded-full bg-amber-500/15 text-amber-600 flex items-center justify-center font-bold">
+                  ₹
+                </div>
+                <span>Collect Pending Dues</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsFabMenuOpen(false);
+                  setIsCheckInModalOpen(true);
+                }}
+                className="flex items-center gap-3 p-3 rounded-2xl bg-surface hover:bg-surface-hover font-bold text-xs text-main border border-theme text-left transition"
+              >
+                <div className="w-8 h-8 rounded-full bg-blue-500/15 text-blue-600 flex items-center justify-center font-bold">
+                  🕒
+                </div>
+                <span>Floor Check In</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 3. 4 KPI CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
