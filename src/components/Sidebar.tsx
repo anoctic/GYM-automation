@@ -30,6 +30,7 @@ import {
 interface SidebarProps {
   gymName?: string;
   gymSlug?: string;
+  logoUrl?: string | null;
   isDemo?: boolean;
   userEmail?: string | null;
   isOpen: boolean;
@@ -41,6 +42,7 @@ interface SidebarProps {
 export function Sidebar({
   gymName = "Fitness Planet Unisex Gym",
   gymSlug = "fitness-planet-sikandrabad",
+  logoUrl,
   isDemo = false,
   userEmail = "owner@fitnessplanet.in",
   isOpen,
@@ -87,7 +89,7 @@ export function Sidebar({
             onClick={onClose}
             className="flex items-center space-x-3 group"
           >
-            <FitnessPlanetLogo size="sm" showTagline={false} />
+            <FitnessPlanetLogo size="sm" showTagline={false} src={logoUrl} />
             <div className="flex flex-col min-w-0">
               <span className="font-extrabold text-main text-sm tracking-tight truncate leading-tight group-hover:text-emerald-500 transition-colors">
                 Fitness Planet

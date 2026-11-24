@@ -46,6 +46,7 @@ export default async function RootLayout({
           <AppShell
             gymName={gym?.name || "Fitness Planet Unisex Gym"}
             gymSlug={gym?.slug || "fitness-planet-sikandrabad"}
+            logoUrl={gym?.logo_url || "/fitness-planet-logo.png"}
             isDemo={isDemo}
             userEmail={user?.email || (isDemo ? "demo@fitnessplanet.in" : null)}
           >

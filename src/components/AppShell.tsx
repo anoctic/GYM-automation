@@ -10,6 +10,7 @@ interface AppShellProps {
   children: React.ReactNode;
   gymName?: string;
   gymSlug?: string;
+  logoUrl?: string | null;
   isDemo?: boolean;
   userEmail?: string | null;
 }
@@ -18,6 +19,7 @@ export function AppShell({
   children,
   gymName = "Fitness Planet Unisex Gym",
   gymSlug = "fitness-planet-sikandrabad",
+  logoUrl = "/fitness-planet-logo.png",
   isDemo = false,
   userEmail = null,
 }: AppShellProps) {
@@ -52,6 +54,7 @@ export function AppShell({
       <Sidebar
         gymName={gymName}
         gymSlug={gymSlug}
+        logoUrl={logoUrl}
         isDemo={isDemo}
         userEmail={userEmail}
         isOpen={sidebarOpen}
@@ -65,6 +68,7 @@ export function AppShell({
         <Header
           gymName={gymName}
           gymSlug={gymSlug}
+          logoUrl={logoUrl}
           isDemo={isDemo}
           onOpenSidebar={() => setSidebarOpen(true)}
           onToggleDemo={handleToggleDemo}

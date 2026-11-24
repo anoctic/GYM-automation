@@ -27,6 +27,9 @@ import {
   History,
   Clock,
   Sparkles,
+  Upload,
+  Image as ImageIcon,
+  RefreshCw,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -48,6 +51,8 @@ export function SettingsClient({
   // Gym Profile State
   const [name, setName] = useState(gym.name || "Fitness Planet Unisex Gym");
   const [slug, setSlug] = useState(gym.slug || "fitness-planet-sikandrabad");
+  const [logoUrl, setLogoUrl] = useState(gym.logo_url || "/fitness-planet-logo.png");
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [tagline, setTagline] = useState(gym.tagline || "Strong Is Universal • Gym & Health Club");
   const [address, setAddress] = useState(gym.address || "Sikandrabad");
   const [pincode, setPincode] = useState(gym.pincode || "203205");
@@ -86,6 +91,39 @@ export function SettingsClient({
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
+  // Logo file upload handler
+  function handleLogoFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setMessage({ text: "Please select an image file (PNG, JPG, WEBP).", type: "error" });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ text: "Image file is too large. Please select an image under 5MB.", type: "error" });
+      return;
+    }
+
+    setIsUploadingLogo(true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setLogoUrl(result);
+      setIsUploadingLogo(false);
+      setMessage({
+        text: "New logo photo loaded! Click 'Save Fitness Planet Settings' below to persist changes.",
+        type: "success",
+      });
+    };
+    reader.onerror = () => {
+      setIsUploadingLogo(false);
+      setMessage({ text: "Failed to read image file.", type: "error" });
+    };
+    reader.readAsDataURL(file);
+  }
+
   // 1. Save Gym Profile & UPI Settings
   async function handleSaveSettings(e: React.FormEvent) {
     e.preventDefault();
@@ -102,6 +140,7 @@ export function SettingsClient({
       state,
       phone,
       email,
+      logo_url: logoUrl,
       opening_hours: openingHours,
       upi_primary_id: upiPrimaryId,
       upi_primary_name: upiPrimaryName,
@@ -278,6 +317,88 @@ export function SettingsClient({
       {/* TAB 1: General & Dual UPI */}
       {activeTab === "general" && (
         <form onSubmit={handleSaveSettings} className="space-y-6">
+          {/* Gym Logo & Branding Photo */}
+          <div className="bg-surface border border-theme rounded-2xl p-6 shadow-xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 className="text-base font-bold text-main flex items-center">
+                  <ImageIcon className="w-4 h-4 text-amber-500 mr-2" />
+                  Gym Logo &amp; Branding Photo
+                </h2>
+                <p className="text-xs text-muted-theme mt-0.5">
+                  Customize the official logo shown across your dashboard hero banner, navigation sidebar, and kiosk.
+                </p>
+              </div>
+
+              {logoUrl !== "/fitness-planet-logo.png" && (
+                <button
+                  type="button"
+                  onClick={() => setLogoUrl("/fitness-planet-logo.png")}
+                  className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold transition shrink-0"
+                  title="Reset to official 3D emblem"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  Reset to Default Logo
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 p-4 rounded-xl bg-app border border-theme/70">
+              {/* Logo Preview */}
+              <div className="relative shrink-0 flex flex-col items-center">
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-[#060a12] border border-amber-500/30 flex items-center justify-center p-2 shadow-lg shadow-amber-950/20 group overflow-hidden">
+                  <div className="absolute inset-0 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
+                  <img
+                    src={logoUrl || "/fitness-planet-logo.png"}
+                    alt="Gym Logo Preview"
+                    className="w-full h-full object-contain relative z-10 transition-transform group-hover:scale-105"
+                  />
+                </div>
+                <span className="text-[10px] text-muted-theme font-medium mt-2">Active Preview</span>
+              </div>
+
+              {/* Upload & URL Controls */}
+              <div className="flex-1 space-y-4 w-full">
+                {/* File Upload Option */}
+                <div>
+                  <label className="block text-xs font-semibold text-main mb-1.5">
+                    Upload New Photo from Device
+                  </label>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label className="cursor-pointer inline-flex items-center space-x-2 py-2 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-sm shadow-emerald-950/30">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{isUploadingLogo ? "Reading Photo..." : "Choose Image File"}</span>
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                        className="hidden"
+                        onChange={handleLogoFileChange}
+                        disabled={isUploadingLogo}
+                      />
+                    </label>
+                    <span className="text-[11px] text-muted-theme">
+                      PNG (transparent recommended), JPG, or WEBP (Max 5MB)
+                    </span>
+                  </div>
+                </div>
+
+                {/* Direct Image URL Option */}
+                <div>
+                  <label className="block text-xs font-semibold text-main mb-1">
+                    Or Image URL / Cloud Link
+                  </label>
+                  <input
+                    type="url"
+                    value={logoUrl}
+                    onChange={(e) => setLogoUrl(e.target.value)}
+                    placeholder="https://example.com/my-gym-logo.png"
+                    className="w-full px-3 py-2 bg-surface border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Gym Profile & Slug */}
           <div className="bg-surface border border-theme rounded-2xl p-6 shadow-xs space-y-4">
             <h2 className="text-base font-bold text-main flex items-center">

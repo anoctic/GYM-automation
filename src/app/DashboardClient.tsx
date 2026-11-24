@@ -297,9 +297,9 @@ export function DashboardClient({
             <div className="absolute w-56 h-56 sm:w-64 sm:h-64 rounded-full bg-amber-500/20 blur-2xl pointer-events-none" />
             <div className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-64 flex items-center justify-center group hover:scale-105 transition-transform duration-300">
               <img
-                src="/fitness-planet-logo.jpg"
+                src={gym?.logo_url || "/fitness-planet-logo.png"}
                 alt="Fitness Planet Unisex Gym Logo"
-                className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(245,158,11,0.35)] rounded-2xl"
+                className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(245,158,11,0.35)]"
               />
             </div>
           </div>

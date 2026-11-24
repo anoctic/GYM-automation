@@ -9,6 +9,7 @@ import { FitnessPlanetLogo } from "./FitnessPlanetLogo";
 interface HeaderProps {
   gymName?: string;
   gymSlug?: string;
+  logoUrl?: string | null;
   isDemo?: boolean;
   onOpenSidebar: () => void;
   onToggleDemo?: () => void;
@@ -17,6 +18,7 @@ interface HeaderProps {
 export function Header({
   gymName = "Fitness Planet Unisex Gym",
   gymSlug = "fitness-planet-sikandrabad",
+  logoUrl,
   isDemo = false,
   onOpenSidebar,
   onToggleDemo,
@@ -36,7 +38,7 @@ export function Header({
         </button>
 
         <div className="lg:hidden flex items-center space-x-2">
-          <FitnessPlanetLogo size="xs" showTagline={false} />
+          <FitnessPlanetLogo size="xs" showTagline={false} src={logoUrl} />
           <span className="font-extrabold text-sm text-main truncate max-w-[170px] sm:max-w-xs">
             Fitness Planet
           </span>
