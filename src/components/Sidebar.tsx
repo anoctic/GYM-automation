@@ -90,10 +90,10 @@ export function Sidebar({
           >
             <FitnessPlanetLogo size="sm" showTagline={false} src={logoUrl} />
             <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-slate-900 dark:text-white text-sm tracking-tight truncate leading-tight group-hover:text-emerald-500 transition-colors">
+              <span className="font-extrabold text-slate-900 dark:text-white text-sm tracking-tight truncate leading-tight group-hover:text-emerald-500 transition-colors font-display">
                 Fitness Planet
               </span>
-              <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 tracking-wider uppercase">
+              <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 tracking-wider uppercase font-display">
                 Unisex Gym • Sikandrabad
               </span>
             </div>

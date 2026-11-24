@@ -43,10 +43,10 @@ export function Header({
             Welcome back, Kapil
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white truncate max-w-[170px] sm:max-w-xs leading-tight">
+            <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white truncate max-w-[170px] sm:max-w-xs leading-tight font-display">
               Fitness Planet Unisex Gym
             </span>
-            <span className="owner-pill shrink-0">Owner</span>
+            <span className="owner-pill shrink-0 font-display">Owner</span>
           </div>
         </div>
       </div>

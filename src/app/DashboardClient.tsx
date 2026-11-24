@@ -332,7 +332,7 @@ export function DashboardClient({
             <span className="text-slate-400 text-base font-bold group-hover:translate-x-1 transition-transform">›</span>
           </div>
 
-          <div className="text-3xl sm:text-4xl lg:text-5xl font-black mt-2 tracking-tight text-white">
+          <div className="text-3xl sm:text-4xl lg:text-5xl font-black mt-2 tracking-tight text-white font-display tabular-nums">
             {formatCurrency(financials.totalRevenue)}
           </div>
 
@@ -340,12 +340,12 @@ export function DashboardClient({
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[var(--lime)] inline-block" />
               <span className="text-slate-400 font-normal">Online</span>
-              <strong className="text-white">{formatCurrency(financials.upiTotal + financials.bankTotal)}</strong>
+              <strong className="text-white font-display tabular-nums">{formatCurrency(financials.upiTotal + financials.bankTotal)}</strong>
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-slate-400 inline-block" />
               <span className="text-slate-400 font-normal">Cash</span>
-              <strong className="text-white">{formatCurrency(financials.cashTotal)}</strong>
+              <strong className="text-white font-display tabular-nums">{formatCurrency(financials.cashTotal)}</strong>
             </span>
           </div>
         </div>

@@ -49,7 +49,7 @@
 body {
   background-color: var(--bg-app);
   color: var(--text-main);
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -57,6 +57,29 @@ body {
   min-height: 100vh;
   transition: background-color 0.2s ease, color 0.2s ease;
   overflow-x: hidden;
+}
+
+button, input, select, textarea {
+  font-family: var(--font-sans), inherit;
+}
+
+/* Space Grotesk Display Headings & Brand Titles */
+h1, h2, h3, h4, h5, h6,
+.font-display {
+  font-family: var(--font-display), "Space Grotesk", var(--font-sans), sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Number displays with Space Grotesk & tabular-nums */
+.hero-collection-card .text-3xl,
+.hero-collection-card .text-4xl,
+.hero-collection-card .text-5xl,
+.hero-collection-card strong,
+.mini-stat .num,
+.font-display-num {
+  font-family: var(--font-display), "Space Grotesk", sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
 /* Owner Pill */
@@ -394,8 +417,10 @@ body {
 }
 
 /* Monospace font utility for Member Codes & Receipts */
-.font-mono-code {
-  font-family: var(--font-jetbrains-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+.font-mono-code,
+.font-mono {
+  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Custom Scrollbar */
