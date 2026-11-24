@@ -87,9 +87,9 @@ export function Header({
 
         {/* Electric Lime Bell Button with Red Unread Dot */}
         <Link
-          href="/outreach"
+          href="/notifications"
           className="lime-bell-btn"
-          title="Notifications & Dues Reminders"
+          title="Notifications & Alerts"
         >
           <span>🔔</span>
           <span className="bell-dot"></span>
