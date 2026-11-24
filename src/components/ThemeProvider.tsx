@@ -11,27 +11,27 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: "dark",
+  theme: "light",
   toggleTheme: () => {},
   setTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("gymos_theme") as Theme | null;
-    const initial = saved === "light" ? "light" : "dark";
+    const initial = saved === "dark" ? "dark" : "light";
     setThemeState(initial);
     document.documentElement.setAttribute("data-theme", initial);
-    if (initial === "light") {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-    } else {
+    if (initial === "dark") {
       document.documentElement.classList.add("dark");
       document.documentElement.classList.remove("light");
+    } else {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
     }
   }, []);
 

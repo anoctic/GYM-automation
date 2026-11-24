@@ -221,13 +221,13 @@ export function DashboardClient({
         </div>
       )}
 
-      {/* 1. HERO BANNER: Pitch Dark Card with Curved Gold Accent + Large Floating 3D Logo (Matching Image 2) */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#06080e] via-[#090d16] to-[#0d121e] border border-amber-500/20 p-6 sm:p-8 lg:p-10 shadow-2xl">
+      {/* 1. HERO BANNER: iOS Liquid Glass Frosted Card with Curved Gold Accent + Large Floating 3D Logo */}
+      <div className="relative overflow-hidden rounded-3xl bg-white/75 dark:bg-gradient-to-br dark:from-[#06080e] dark:via-[#090d16] dark:to-[#0d121e] border border-white/80 dark:border-amber-500/20 backdrop-blur-2xl p-6 sm:p-8 lg:p-10 shadow-lg dark:shadow-2xl">
         {/* Intense Warm Golden-Amber Ambient Radial Glow Behind Logo */}
-        <div className="absolute top-1/2 -translate-y-1/2 -right-8 w-96 h-96 bg-gradient-to-br from-amber-500/25 via-orange-600/20 to-transparent rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 left-1/3 w-80 h-32 bg-amber-600/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-1/2 -translate-y-1/2 -right-8 w-96 h-96 bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-transparent rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 left-1/3 w-80 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
-        {/* Curved Golden Accent Wave Across Bottom (as in Image 2) */}
+        {/* Curved Golden Accent Wave Across Bottom */}
         <svg
           className="absolute bottom-0 left-0 right-0 w-full h-12 pointer-events-none opacity-40 overflow-visible"
           viewBox="0 0 1200 60"
@@ -253,45 +253,45 @@ export function DashboardClient({
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div className="space-y-4 max-w-xl">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight flex items-center gap-3">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
               <span>Welcome back, Kapil!</span>
               <span className="inline-block text-3xl sm:text-4xl">👋</span>
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-400 font-normal leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-normal leading-relaxed">
               Manage your gym, members, payments and growth all in one place.
             </p>
 
-            {/* 5 Status Pills (Matching Image 2 Exact Colors & Pill Design) */}
+            {/* 5 Status Pills (Liquid Glass Frosted Pills) */}
             <div className="flex flex-wrap items-center gap-2.5 pt-2 text-xs">
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#111622] border border-slate-800 text-slate-300 font-medium shadow-xs">
-                <Users className="w-3.5 h-3.5 text-slate-400" />
+              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
+                <Users className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                 <span>{totalCount} Total Members</span>
               </span>
 
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#111622] border border-slate-800 text-slate-300 font-medium shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
                 <span>{activeCount} Active</span>
               </span>
 
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#111622] border border-slate-800 text-slate-300 font-medium shadow-xs">
-                <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />
                 <span>{trialCount} Trials</span>
               </span>
 
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#111622] border border-slate-800 text-slate-300 font-medium shadow-xs">
-                <PauseCircle className="w-3.5 h-3.5 text-blue-400" />
+              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
+                <PauseCircle className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
                 <span>{frozenCount} Frozen</span>
               </span>
 
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-[#111622] border border-amber-900/50 text-amber-300 font-medium shadow-xs">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/10 dark:bg-[#111622] border border-amber-300/70 dark:border-amber-900/50 text-amber-900 dark:text-amber-300 font-semibold shadow-xs">
+                <AlertCircle className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                 <span>{withDuesCount} With Dues</span>
               </span>
             </div>
           </div>
 
-          {/* Right: High-Res 3D Emblem Logo with Warm Halo (Image 2 style) */}
+          {/* Right: High-Res 3D Emblem Logo with Warm Halo */}
           <div className="relative flex items-center justify-center shrink-0">
             {/* Ambient Halo */}
             <div className="absolute w-56 h-56 sm:w-64 sm:h-64 rounded-full bg-amber-500/20 blur-2xl pointer-events-none" />
@@ -299,16 +299,16 @@ export function DashboardClient({
               <img
                 src={gym?.logo_url || "/fitness-planet-logo.png"}
                 alt="Fitness Planet Unisex Gym Logo"
-                className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(245,158,11,0.35)]"
+                className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(245,158,11,0.3)]"
               />
             </div>
           </div>
         </div>
       </div>
 
-      {/* 2. QUICK ACTIONS SECTION (Matching Image 2 exact layout and button styles) */}
+      {/* 2. QUICK ACTIONS SECTION */}
       <div className="space-y-2.5">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Quick Actions
         </h2>
 
@@ -316,7 +316,7 @@ export function DashboardClient({
           {/* + Enroll Member (Emerald primary pill) */}
           <Link
             href="/members"
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-950/40 transition group"
+            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-700/20 active:scale-95 transition group"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
             <span>Enroll Member</span>
@@ -328,9 +328,9 @@ export function DashboardClient({
               setIsLeadModalOpen(true);
               setLeadStage("trial_booked");
             }}
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-[#111622] hover:bg-[#182030] text-slate-200 border border-slate-800 font-bold text-xs transition"
+            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-white/80 dark:bg-[#111622] hover:bg-white dark:hover:bg-[#182030] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 font-bold text-xs shadow-xs active:scale-95 transition"
           >
-            <Plus className="w-4 h-4 text-purple-400 stroke-[2.5]" />
+            <Plus className="w-4 h-4 text-purple-500 dark:text-purple-400 stroke-[2.5]" />
             <span>Add Trial</span>
           </button>
 
@@ -344,27 +344,27 @@ export function DashboardClient({
                 setCollectAmount(Number(mWithDues.pending_dues));
               }
             }}
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-[#111622] hover:bg-[#182030] text-slate-200 border border-slate-800 font-bold text-xs transition"
+            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-white/80 dark:bg-[#111622] hover:bg-white dark:hover:bg-[#182030] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 font-bold text-xs shadow-xs active:scale-95 transition"
           >
-            <IndianRupee className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
+            <IndianRupee className="w-4 h-4 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
             <span>Collect Payment</span>
           </button>
 
           {/* 💬 Send WhatsApp */}
           <Link
             href="/outreach"
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-[#111622] hover:bg-[#182030] text-slate-200 border border-slate-800 font-bold text-xs transition"
+            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-white/80 dark:bg-[#111622] hover:bg-white dark:hover:bg-[#182030] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 font-bold text-xs shadow-xs active:scale-95 transition"
           >
-            <MessageCircle className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
+            <MessageCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
             <span>Send WhatsApp</span>
           </Link>
 
           {/* 🗓️ Floor Check In */}
           <button
             onClick={() => setIsCheckInModalOpen(true)}
-            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-[#111622] hover:bg-[#182030] text-slate-200 border border-slate-800 font-bold text-xs transition"
+            className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-white/80 dark:bg-[#111622] hover:bg-white dark:hover:bg-[#182030] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800 font-bold text-xs shadow-xs active:scale-95 transition"
           >
-            <Calendar className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
+            <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
             <span>Floor Check In</span>
           </button>
         </div>

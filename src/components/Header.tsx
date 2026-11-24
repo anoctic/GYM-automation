@@ -26,7 +26,7 @@ export function Header({
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-sidebar/90 backdrop-blur-md border-b border-theme flex items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-30 h-16 bg-white/80 dark:bg-[#0b0f17]/85 backdrop-blur-2xl backdrop-saturate-150 border-b border-slate-200/70 dark:border-white/10 shadow-xs flex items-center justify-between px-4 sm:px-6">
       {/* Left: Mobile Hamburger & Brand Title */}
       <div className="flex items-center space-x-3">
         <button

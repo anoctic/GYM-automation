@@ -1,8 +1,19 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppShell } from "@/components/AppShell";
 import { getTenantContext } from "@/lib/tenant/context";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F2F2F7" },
+    { media: "(prefers-color-scheme: dark)", color: "#070A0F" },
+  ],
+};
 
 export const metadata: Metadata = {
   title: "Fitness Planet Unisex Gym - GymOS Cloud Edition",
@@ -20,21 +31,21 @@ export default async function RootLayout({
   const { gym, isDemo, user } = await getTenantContext();
 
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning>
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
-        {/* Anti-FOUC Theme Script */}
+        {/* Anti-FOUC Theme Script (Default Light with iOS Glass Feel) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                var theme = localStorage.getItem('gymos_theme') || 'dark';
+                var theme = localStorage.getItem('gymos_theme') || 'light';
                 document.documentElement.setAttribute('data-theme', theme);
-                if (theme === 'light') {
-                  document.documentElement.classList.add('light');
-                  document.documentElement.classList.remove('dark');
-                } else {
+                if (theme === 'dark') {
                   document.documentElement.classList.add('dark');
                   document.documentElement.classList.remove('light');
+                } else {
+                  document.documentElement.classList.add('light');
+                  document.documentElement.classList.remove('dark');
                 }
               } catch (e) {}
             `,

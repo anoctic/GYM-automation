@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { BottomTabBar } from "./BottomTabBar";
 import { toggleDemoMode, signOut } from "@/actions/auth";
 
 interface AppShellProps {
@@ -74,10 +75,13 @@ export function AppShell({
           onToggleDemo={handleToggleDemo}
         />
 
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 lg:pb-8">
           {children}
         </main>
       </div>
+
+      {/* iOS Liquid Glass Bottom Navigation Bar (Mobile / Tablet) */}
+      <BottomTabBar />
     </div>
   );
 }
