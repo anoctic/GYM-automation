@@ -4,16 +4,17 @@ import { useState } from "react";
 import { createLead, updateLeadStage, deleteLead } from "@/actions/leads";
 import { formatDate } from "@/lib/utils";
 import type { Lead, LeadStage } from "@/types/database";
-import { 
-  PhoneCall, 
-  Plus, 
-  Trash2, 
-  Clock, 
-  User, 
-  Phone, 
-  X, 
+import {
+  PhoneCall,
+  Plus,
+  Trash2,
+  Clock,
+  User,
+  Phone,
+  X,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  MessageCircle,
 } from "lucide-react";
 
 interface LeadsClientProps {
@@ -22,12 +23,12 @@ interface LeadsClientProps {
 }
 
 const STAGES: { stage: LeadStage; label: string; color: string }[] = [
-  { stage: "new_inquiry", label: "New Inquiry", color: "bg-blue-950 text-blue-300 border-blue-800" },
-  { stage: "contacted", label: "Contacted", color: "bg-indigo-950 text-indigo-300 border-indigo-800" },
-  { stage: "trial_booked", label: "Trial Booked", color: "bg-amber-950 text-amber-300 border-amber-800" },
-  { stage: "follow_up", label: "Follow-Up", color: "bg-purple-950 text-purple-300 border-purple-800" },
-  { stage: "converted", label: "Converted (Member)", color: "bg-emerald-950 text-emerald-300 border-emerald-800" },
-  { stage: "lost", label: "Lost", color: "bg-gray-800 text-gray-400 border-gray-700" },
+  { stage: "new_inquiry", label: "New Inquiry", color: "bg-blue-500/10 text-blue-400 border-blue-500/30" },
+  { stage: "contacted", label: "Contacted", color: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30" },
+  { stage: "trial_booked", label: "Trial Booked", color: "bg-amber-500/10 text-amber-400 border-amber-500/30" },
+  { stage: "follow_up", label: "Follow-Up", color: "bg-purple-500/10 text-purple-400 border-purple-500/30" },
+  { stage: "converted", label: "Converted (Member)", color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" },
+  { stage: "lost", label: "Lost", color: "bg-surface text-muted-theme border-theme" },
 ];
 
 export function LeadsClient({ initialLeads, isDemo }: LeadsClientProps) {
@@ -85,18 +86,18 @@ export function LeadsClient({ initialLeads, isDemo }: LeadsClientProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center">
-            <PhoneCall className="w-6 h-6 text-emerald-400 mr-2" />
+          <h1 className="text-2xl font-bold text-main flex items-center">
+            <PhoneCall className="w-6 h-6 text-emerald-500 mr-2" />
             Leads & Inquiries CRM
           </h1>
-          <p className="text-sm text-gray-400 mt-1">
-            Track prospective members, trial session bookings, and conversion pipeline.
+          <p className="text-sm text-muted-theme mt-1">
+            Track prospective Fitness Planet members, trial session bookings, and conversion pipeline.
           </p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-semibold transition flex items-center shadow"
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition flex items-center shadow-md shadow-emerald-950/40"
         >
           <Plus className="w-4 h-4 mr-1.5" />
           Add Lead
@@ -108,67 +109,86 @@ export function LeadsClient({ initialLeads, isDemo }: LeadsClientProps) {
         {STAGES.map((s) => {
           const stageLeads = leads.filter((l) => l.stage === s.stage);
           return (
-            <div key={s.stage} className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-800 mb-3">
-                <span className={`px-2 py-0.5 rounded text-xs font-bold border ${s.color}`}>
+            <div key={s.stage} className="bg-surface border border-theme rounded-2xl p-4 flex flex-col shadow-xs">
+              <div className="flex items-center justify-between pb-3 border-b border-theme mb-3">
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${s.color}`}>
                   {s.label}
                 </span>
-                <span className="text-xs text-gray-400 font-mono font-bold">
+                <span className="text-xs text-muted-theme font-mono font-bold">
                   {stageLeads.length}
                 </span>
               </div>
 
               <div className="space-y-3 flex-1">
                 {stageLeads.length === 0 ? (
-                  <p className="text-xs text-gray-400 italic py-4 text-center">No leads in this stage</p>
+                  <p className="text-xs text-muted-theme italic py-6 text-center">No leads in this stage</p>
                 ) : (
-                  stageLeads.map((lead) => (
-                    <div
-                      key={lead.id}
-                      className="p-3 bg-gray-800/60 border border-gray-700/60 rounded-lg text-xs space-y-2 hover:border-gray-600 transition"
-                    >
-                      <div className="flex items-start justify-between">
-                        <span className="font-bold text-white text-sm">{lead.name}</span>
-                        <button
-                          onClick={() => handleDelete(lead.id)}
-                          className="text-gray-400 hover:text-red-400 p-0.5"
-                          title="Delete Lead"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                  stageLeads.map((lead) => {
+                    const cleanPhone = lead.phone.replace(/[^0-9]/g, "");
+                    const waUrl = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(
+                      `Namaste ${lead.name}! Fitness Planet Unisex Gym, Sikandrabad se Kapil Rajput baat kar raha hoon. Gym membership and free trial workout session ke regarding connect kiya.`
+                    )}`;
+
+                    return (
+                      <div
+                        key={lead.id}
+                        className="p-3.5 bg-app border border-theme rounded-xl text-xs space-y-2.5 hover:border-emerald-500/40 transition"
+                      >
+                        <div className="flex items-start justify-between">
+                          <span className="font-bold text-main text-sm">{lead.name}</span>
+                          <button
+                            onClick={() => handleDelete(lead.id)}
+                            className="text-muted-theme hover:text-rose-400 p-0.5 transition"
+                            title="Delete Lead"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between text-muted-theme">
+                          <div className="flex items-center space-x-1.5">
+                            <Phone className="w-3 h-3 text-emerald-500" />
+                            <span className="font-mono">{lead.phone}</span>
+                          </div>
+                          <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-1 rounded-md bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition flex items-center gap-1 text-[10px] font-bold"
+                            title="Chat on WhatsApp"
+                          >
+                            <MessageCircle className="w-3 h-3" />
+                            <span>WhatsApp</span>
+                          </a>
+                        </div>
+
+                        {lead.notes && (
+                          <p className="text-[11px] text-muted-theme bg-surface p-2 rounded-lg border border-theme">
+                            {lead.notes}
+                          </p>
+                        )}
+
+                        <div className="pt-2 border-t border-theme flex items-center justify-between">
+                          <span className="text-[10px] text-muted-theme font-mono">
+                            {formatDate(lead.updated_at)}
+                          </span>
+
+                          {/* Move stage dropdown */}
+                          <select
+                            value={lead.stage}
+                            onChange={(e) => handleStageChange(lead.id, e.target.value as LeadStage)}
+                            className="text-[10px] bg-surface border border-theme text-main rounded-lg px-2 py-0.5 focus:outline-none"
+                          >
+                            {STAGES.map((st) => (
+                              <option key={st.stage} value={st.stage}>
+                                Move: {st.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
-
-                      <div className="text-gray-300 flex items-center">
-                        <Phone className="w-3 h-3 text-emerald-400 mr-1.5" />
-                        <span>{lead.phone}</span>
-                      </div>
-
-                      {lead.notes && (
-                        <p className="text-[11px] text-gray-400 bg-gray-900/60 p-2 rounded border border-gray-800/80">
-                          {lead.notes}
-                        </p>
-                      )}
-
-                      <div className="pt-2 border-t border-gray-700/50 flex items-center justify-between">
-                        <span className="text-[10px] text-gray-400">
-                          Updated {formatDate(lead.updated_at)}
-                        </span>
-
-                        {/* Move stage dropdown */}
-                        <select
-                          value={lead.stage}
-                          onChange={(e) => handleStageChange(lead.id, e.target.value as LeadStage)}
-                          className="text-[11px] bg-gray-900 border border-gray-700 text-gray-300 rounded px-1.5 py-0.5 focus:outline-none"
-                        >
-                          {STAGES.map((st) => (
-                            <option key={st.stage} value={st.stage}>
-                              Move to: {st.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
@@ -179,65 +199,67 @@ export function LeadsClient({ initialLeads, isDemo }: LeadsClientProps) {
       {/* CREATE LEAD MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl max-w-md w-full p-6 shadow-2xl relative">
+          <div className="bg-surface border border-theme rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-muted-theme hover:text-main"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-lg font-bold text-white mb-1">Add Lead / Inquiry</h2>
-            <p className="text-xs text-gray-400 mb-4">Record new walk-in or phone enquiry.</p>
+            <h2 className="text-lg font-bold text-main mb-1">Add Lead / Inquiry</h2>
+            <p className="text-xs text-muted-theme mb-4">
+              Log a walk-in inquiry or phone lead to track follow-ups and trial visits.
+            </p>
 
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Name *</label>
+                <label className="block text-xs font-semibold text-main mb-1">Prospect Name *</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Karan Malhotra"
+                  placeholder="e.g. Rahul Verma"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main placeholder-muted-theme focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Phone Number *</label>
+                <label className="block text-xs font-semibold text-main mb-1">Phone Number *</label>
                 <input
                   type="tel"
                   required
-                  placeholder="+91 98765 00000"
+                  placeholder="+91 91491 00000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main placeholder-muted-theme focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Stage</label>
+                <label className="block text-xs font-semibold text-main mb-1">Initial Pipeline Stage</label>
                 <select
                   value={stage}
                   onChange={(e) => setStage(e.target.value as LeadStage)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
                 >
-                  {STAGES.map((s) => (
-                    <option key={s.stage} value={s.stage}>
-                      {s.label}
+                  {STAGES.map((st) => (
+                    <option key={st.stage} value={st.stage}>
+                      {st.label}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Inquiry Notes</label>
+                <label className="block text-xs font-semibold text-main mb-1">Inquiry Notes</label>
                 <textarea
-                  rows={2}
-                  placeholder="e.g. Interested in evening trial, asked about personal trainer fees"
+                  rows={3}
+                  placeholder="Interested in evening slot, weight gain program, etc."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main placeholder-muted-theme focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -245,16 +267,16 @@ export function LeadsClient({ initialLeads, isDemo }: LeadsClientProps) {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-xs font-medium transition"
+                  className="px-4 py-2 bg-surface hover:bg-surface/80 border border-theme text-main rounded-xl text-xs font-semibold transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow disabled:opacity-50"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-md shadow-emerald-950/40 disabled:opacity-50"
                 >
-                  {loading ? "Saving..." : "Add Lead"}
+                  {loading ? "Adding..." : "Save Lead"}
                 </button>
               </div>
             </form>

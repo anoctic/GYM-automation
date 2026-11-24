@@ -54,10 +54,11 @@ export async function getAttendanceHistory(limit: number = 20) {
     .limit(limit);
 
   if (error) {
-    return { error: error.message, logs: [] };
+    return { error: error.message, logs: [], history: [] };
   }
 
-  return { logs: (data as AttendanceLog[]) || [] };
+  const logsList = (data as AttendanceLog[]) || [];
+  return { logs: logsList, history: logsList };
 }
 
 export async function checkInMember(
@@ -124,7 +125,12 @@ export async function checkInMember(
 
   revalidatePath("/floor");
   revalidatePath("/members");
-  return { success: true, log: log as AttendanceLog, memberName: member.full_name };
+  return {
+    success: true,
+    log: log as AttendanceLog,
+    session: log as AttendanceLog,
+    memberName: member.full_name,
+  };
 }
 
 export async function checkOutMember(attendanceLogId: string) {

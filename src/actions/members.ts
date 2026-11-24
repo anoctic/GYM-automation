@@ -6,7 +6,7 @@ import { logAuditEvent } from "@/lib/audit/logger";
 import { getCurrentUserRole } from "@/lib/auth/rbac";
 import { revalidatePath } from "next/cache";
 import { generateMemberCode, generateReceiptNo } from "@/lib/utils";
-import type { Member, MembershipPlan, PaymentMethod, MemberStatus } from "@/types/database";
+import type { Member, MembershipPlan, PaymentMethod, MemberStatus, Payment } from "@/types/database";
 
 export interface EnrollMemberInput {
   full_name: string;
@@ -470,16 +470,20 @@ export async function collectDues(input: CollectDuesInput) {
 
   const receiptNo = generateReceiptNo(paymentCount || 0);
 
-  await db.from("payments").insert({
-    gym_id: gymId,
-    member_id: member.id,
-    receipt_no: receiptNo,
-    amount: payAmount,
-    payment_method: input.payment_method,
-    reference_id: input.reference_id ?? null,
-    notes: input.notes ?? `Collected pending dues (Remaining dues: ₹${remainingDues})`,
-    paid_at: new Date().toISOString(),
-  });
+  const { data: newPayment } = await db
+    .from("payments")
+    .insert({
+      gym_id: gymId,
+      member_id: member.id,
+      receipt_no: receiptNo,
+      amount: payAmount,
+      payment_method: input.payment_method,
+      reference_id: input.reference_id ?? null,
+      notes: input.notes ?? `Collected pending dues (Remaining dues: ₹${remainingDues})`,
+      paid_at: new Date().toISOString(),
+    })
+    .select("*")
+    .single();
 
   // Audit
   await logAuditEvent({
@@ -499,7 +503,12 @@ export async function collectDues(input: CollectDuesInput) {
 
   revalidatePath("/members");
   revalidatePath("/payments");
-  return { success: true, member: updatedMember as Member, remainingDues };
+  return {
+    success: true,
+    member: updatedMember as Member,
+    remainingDues,
+    payment: newPayment as Payment,
+  };
 }
 
 /**

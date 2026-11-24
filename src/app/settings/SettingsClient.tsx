@@ -6,11 +6,11 @@ import { createStaffMember, updateStaffMember, deleteStaffMember } from "@/actio
 import { changePassword, enrollMfaTotp, verifyMfaTotp, unenrollMfa } from "@/actions/security";
 import { formatDate, formatTime } from "@/lib/utils";
 import type { Gym, UpiSlot, GymStaff, StaffRole, AuditLog } from "@/types/database";
-import { 
-  Settings, 
-  CreditCard, 
-  Building, 
-  CheckCircle2, 
+import {
+  Settings,
+  CreditCard,
+  Building,
+  CheckCircle2,
   AlertCircle,
   QrCode,
   Users,
@@ -25,7 +25,8 @@ import {
   Smartphone,
   Eye,
   History,
-  Clock
+  Clock,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -45,22 +46,24 @@ export function SettingsClient({
   const [activeTab, setActiveTab] = useState<"general" | "staff" | "security" | "export" | "audit">("general");
 
   // Gym Profile State
-  const [name, setName] = useState(gym.name || "");
+  const [name, setName] = useState(gym.name || "Fitness Planet Unisex Gym");
   const [slug, setSlug] = useState(gym.slug || "fitness-planet-sikandrabad");
-  const [tagline, setTagline] = useState(gym.tagline || "");
-  const [address, setAddress] = useState(gym.address || "");
-  const [pincode, setPincode] = useState(gym.pincode || "");
-  const [city, setCity] = useState(gym.city || "");
-  const [state, setState] = useState(gym.state || "");
-  const [phone, setPhone] = useState(gym.phone || "");
-  const [email, setEmail] = useState(gym.email || "");
-  const [openingHours, setOpeningHours] = useState(gym.opening_hours || "");
+  const [tagline, setTagline] = useState(gym.tagline || "Strong Is Universal • Gym & Health Club");
+  const [address, setAddress] = useState(gym.address || "Sikandrabad");
+  const [pincode, setPincode] = useState(gym.pincode || "203205");
+  const [city, setCity] = useState(gym.city || "Sikandrabad");
+  const [state, setState] = useState(gym.state || "Uttar Pradesh");
+  const [phone, setPhone] = useState(gym.phone || "+91 9149183060");
+  const [email, setEmail] = useState(gym.email || "kapilrajput.fitnessplanet@gmail.com");
+  const [openingHours, setOpeningHours] = useState(
+    gym.opening_hours || "Morning: 5:00 AM - 10:00 AM | Evening: 4:00 PM - 10:00 PM"
+  );
 
   // Dual UPI Details
-  const [upiPrimaryId, setUpiPrimaryId] = useState(gym.upi_primary_id || "");
-  const [upiPrimaryName, setUpiPrimaryName] = useState(gym.upi_primary_name || "");
-  const [upiSecondaryId, setUpiSecondaryId] = useState(gym.upi_secondary_id || "");
-  const [upiSecondaryName, setUpiSecondaryName] = useState(gym.upi_secondary_name || "");
+  const [upiPrimaryId, setUpiPrimaryId] = useState(gym.upi_primary_id || "9149183060@paytm");
+  const [upiPrimaryName, setUpiPrimaryName] = useState(gym.upi_primary_name || "Fitness Planet Unisex Gym");
+  const [upiSecondaryId, setUpiSecondaryId] = useState(gym.upi_secondary_id || "kapilrajput@oksbi");
+  const [upiSecondaryName, setUpiSecondaryName] = useState(gym.upi_secondary_name || "Kapil Rajput");
   const [defaultUpiSlot, setDefaultUpiSlot] = useState<UpiSlot>(gym.default_upi_slot || "A");
 
   // Staff State
@@ -112,7 +115,7 @@ export function SettingsClient({
     if (res.error) {
       setMessage({ text: res.error, type: "error" });
     } else {
-      setMessage({ text: "Gym profile, slug & Dual UPI settings updated!", type: "success" });
+      setMessage({ text: "Fitness Planet profile, kiosk slug & Dual UPI settings updated!", type: "success" });
     }
   }
 
@@ -211,17 +214,17 @@ export function SettingsClient({
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white flex items-center">
-          <Settings className="w-6 h-6 text-emerald-400 mr-2" />
-          Settings & Administration
+        <h1 className="text-2xl font-bold text-main flex items-center">
+          <Settings className="w-6 h-6 text-emerald-500 mr-2" />
+          Settings & Gym Administration
         </h1>
-        <p className="text-sm text-gray-400 mt-1">
-          Manage gym branding, Dual UPI routing, Staff RBAC, 2FA security, multi-sheet Excel export, and audit trails.
+        <p className="text-sm text-muted-theme mt-1">
+          Manage Fitness Planet branding, Dual UPI routing, Staff RBAC, 2FA security, multi-sheet Excel export, and audit trails.
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center space-x-2 border-b border-gray-800 pb-1 overflow-x-auto">
+      {/* Navigation Tabs */}
+      <div className="flex items-center space-x-1 border-b border-theme pb-1 overflow-x-auto">
         {[
           { id: "general", label: "Profile & Dual UPI", icon: Building },
           { id: "staff", label: `Staff RBAC (${staffList.length})`, icon: Users },
@@ -237,10 +240,10 @@ export function SettingsClient({
                 setActiveTab(tab.id as any);
                 setMessage(null);
               }}
-              className={`px-3.5 py-2 rounded-t-lg text-xs font-bold transition flex items-center whitespace-nowrap ${
+              className={`px-3.5 py-2 rounded-t-xl text-xs font-bold transition flex items-center whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "bg-gray-900 text-emerald-400 border-t-2 border-emerald-500 shadow"
-                  : "text-gray-400 hover:text-white hover:bg-gray-900/50"
+                  ? "bg-surface text-emerald-500 border-t-2 border-emerald-500 shadow-xs"
+                  : "text-muted-theme hover:text-main hover:bg-surface/50"
               }`}
             >
               <Icon className="w-4 h-4 mr-1.5" />
@@ -252,21 +255,21 @@ export function SettingsClient({
 
       {message && (
         <div
-          className={`p-3 rounded-lg border text-xs flex items-center justify-between ${
+          className={`p-3.5 rounded-xl border text-xs flex items-center justify-between ${
             message.type === "success"
-              ? "bg-emerald-950/70 border-emerald-800 text-emerald-300"
-              : "bg-red-950/70 border-red-800 text-red-300"
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+              : "bg-red-500/10 border-red-500/30 text-red-400"
           }`}
         >
           <div className="flex items-center space-x-2">
             {message.type === "success" ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
             ) : (
               <AlertCircle className="w-4 h-4 text-red-400" />
             )}
             <span>{message.text}</span>
           </div>
-          <button onClick={() => setMessage(null)} className="text-gray-400 hover:text-white">
+          <button onClick={() => setMessage(null)} className="text-muted-theme hover:text-main">
             ✕
           </button>
         </div>
@@ -276,30 +279,30 @@ export function SettingsClient({
       {activeTab === "general" && (
         <form onSubmit={handleSaveSettings} className="space-y-6">
           {/* Gym Profile & Slug */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-white flex items-center">
-              <Building className="w-4 h-4 text-emerald-400 mr-2" />
-              Gym Information & Kiosk Slug
+          <div className="bg-surface border border-theme rounded-2xl p-6 shadow-xs space-y-4">
+            <h2 className="text-base font-bold text-main flex items-center">
+              <Building className="w-4 h-4 text-emerald-500 mr-2" />
+              Fitness Planet Information & Kiosk Slug
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Gym Name *</label>
+                <label className="block text-xs font-semibold text-main mb-1">Gym Name *</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">
-                  Public Kiosk Slug * (e.g. <span className="font-mono text-emerald-400">anytime-fitness-sikandrab</span>)
+                <label className="block text-xs font-semibold text-main mb-1">
+                  Public Kiosk Slug * (e.g. <span className="font-mono text-emerald-500">fitness-planet-sikandrabad</span>)
                 </label>
                 <div className="flex items-center">
-                  <span className="text-xs text-gray-400 px-2.5 py-2 bg-gray-800/80 border border-r-0 border-gray-700 rounded-l-lg font-mono">
+                  <span className="text-xs text-muted-theme px-2.5 py-2 bg-app border border-r-0 border-theme rounded-l-xl font-mono">
                     /checkin/
                   </span>
                   <input
@@ -307,12 +310,12 @@ export function SettingsClient({
                     required
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-r-lg text-sm text-white focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full px-3 py-2 bg-app border border-theme rounded-r-xl text-xs text-main focus:outline-none focus:border-emerald-500 font-mono"
                   />
                   <Link
-                    href={`/checkin/${slug || "anytime-fitness-sikandrab"}`}
+                    href={`/checkin/${slug || "fitness-planet-sikandrabad"}`}
                     target="_blank"
-                    className="ml-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-emerald-400 rounded-lg border border-gray-700 flex items-center shrink-0"
+                    className="ml-2 px-3 py-2 bg-app hover:bg-surface text-xs font-bold text-emerald-500 rounded-xl border border-theme flex items-center shrink-0"
                     title="Open live kiosk check-in"
                   >
                     <ExternalLink className="w-3.5 h-3.5 mr-1" />
@@ -324,107 +327,107 @@ export function SettingsClient({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Tagline</label>
+                <label className="block text-xs font-semibold text-main mb-1">Tagline</label>
                 <input
                   type="text"
                   value={tagline}
                   onChange={(e) => setTagline(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Operating Hours</label>
+                <label className="block text-xs font-semibold text-main mb-1">Operating Hours</label>
                 <input
                   type="text"
                   value={openingHours}
                   onChange={(e) => setOpeningHours(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Phone</label>
+                <label className="block text-xs font-semibold text-main mb-1">Phone</label>
                 <input
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Email</label>
+                <label className="block text-xs font-semibold text-main mb-1">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-300 mb-1">Street Address</label>
+              <label className="block text-xs font-semibold text-main mb-1">Street Address</label>
               <input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
               />
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">City</label>
+                <label className="block text-xs font-semibold text-main mb-1">City</label>
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">State</label>
+                <label className="block text-xs font-semibold text-main mb-1">State</label>
                 <input
                   type="text"
                   value={state}
                   onChange={(e) => setState(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Pincode</label>
+                <label className="block text-xs font-semibold text-main mb-1">Pincode</label>
                 <input
                   type="text"
                   value={pincode}
                   onChange={(e) => setPincode(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
             </div>
           </div>
 
           {/* Dual UPI Account Routing */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-surface border border-theme rounded-2xl p-6 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
-                <h2 className="text-base font-bold text-white flex items-center">
-                  <CreditCard className="w-4 h-4 text-emerald-400 mr-2" />
+                <h2 className="text-base font-bold text-main flex items-center">
+                  <CreditCard className="w-4 h-4 text-emerald-500 mr-2" />
                   Dual UPI Account Routing
                 </h2>
-                <p className="text-xs text-gray-400">
-                  Route receipts to Primary (Slot A) or Secondary (Slot B) accounts.
+                <p className="text-xs text-muted-theme">
+                  Route receipts to Primary (Slot A) or Secondary (Slot B) accounts seamlessly.
                 </p>
               </div>
 
-              <div className="flex items-center space-x-2 bg-gray-800 p-1 rounded-lg">
-                <span className="text-[11px] text-gray-400 pl-2">Active Slot:</span>
+              <div className="flex items-center space-x-2 bg-app p-1 rounded-xl border border-theme">
+                <span className="text-[11px] text-muted-theme pl-2">Active Slot:</span>
                 <button
                   type="button"
                   onClick={() => setDefaultUpiSlot("A")}
-                  className={`px-3 py-1 text-xs font-bold rounded ${
-                    defaultUpiSlot === "A" ? "bg-emerald-600 text-white shadow" : "text-gray-400"
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition ${
+                    defaultUpiSlot === "A" ? "bg-emerald-600 text-white shadow-xs" : "text-muted-theme hover:text-main"
                   }`}
                 >
                   Slot A
@@ -432,8 +435,8 @@ export function SettingsClient({
                 <button
                   type="button"
                   onClick={() => setDefaultUpiSlot("B")}
-                  className={`px-3 py-1 text-xs font-bold rounded ${
-                    defaultUpiSlot === "B" ? "bg-emerald-600 text-white shadow" : "text-gray-400"
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition ${
+                    defaultUpiSlot === "B" ? "bg-emerald-600 text-white shadow-xs" : "text-muted-theme hover:text-main"
                   }`}
                 >
                   Slot B
@@ -443,46 +446,50 @@ export function SettingsClient({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div
-                className={`p-4 rounded-xl border ${
-                  defaultUpiSlot === "A" ? "bg-emerald-950/20 border-emerald-600" : "bg-gray-800/40 border-gray-800"
+                className={`p-4 rounded-xl border transition ${
+                  defaultUpiSlot === "A"
+                    ? "bg-emerald-500/10 border-emerald-500/40"
+                    : "bg-app border-theme"
                 }`}
               >
-                <span className="text-xs font-bold text-emerald-400 block mb-2">Slot A: Primary UPI</span>
+                <span className="text-xs font-bold text-emerald-500 block mb-2">Slot A: Primary Gym UPI</span>
                 <input
                   type="text"
-                  placeholder="VPA e.g. anytimefit@icici"
+                  placeholder="VPA e.g. 9149183060@paytm"
                   value={upiPrimaryId}
                   onChange={(e) => setUpiPrimaryId(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs text-white mb-2 font-mono"
+                  className="w-full px-3 py-2 bg-surface border border-theme rounded-xl text-xs text-main mb-2 font-mono"
                 />
                 <input
                   type="text"
-                  placeholder="Display Name"
+                  placeholder="Display Name e.g. Fitness Planet Unisex Gym"
                   value={upiPrimaryName}
                   onChange={(e) => setUpiPrimaryName(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs text-white"
+                  className="w-full px-3 py-2 bg-surface border border-theme rounded-xl text-xs text-main"
                 />
               </div>
 
               <div
-                className={`p-4 rounded-xl border ${
-                  defaultUpiSlot === "B" ? "bg-emerald-950/20 border-emerald-600" : "bg-gray-800/40 border-gray-800"
+                className={`p-4 rounded-xl border transition ${
+                  defaultUpiSlot === "B"
+                    ? "bg-emerald-500/10 border-emerald-500/40"
+                    : "bg-app border-theme"
                 }`}
               >
-                <span className="text-xs font-bold text-purple-400 block mb-2">Slot B: Secondary UPI</span>
+                <span className="text-xs font-bold text-amber-500 block mb-2">Slot B: Secondary / Owner UPI</span>
                 <input
                   type="text"
-                  placeholder="VPA e.g. owner@hdfcbank"
+                  placeholder="VPA e.g. kapilrajput@oksbi"
                   value={upiSecondaryId}
                   onChange={(e) => setUpiSecondaryId(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs text-white mb-2 font-mono"
+                  className="w-full px-3 py-2 bg-surface border border-theme rounded-xl text-xs text-main mb-2 font-mono"
                 />
                 <input
                   type="text"
-                  placeholder="Display Name"
+                  placeholder="Display Name e.g. Kapil Rajput"
                   value={upiSecondaryName}
                   onChange={(e) => setUpiSecondaryName(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs text-white"
+                  className="w-full px-3 py-2 bg-surface border border-theme rounded-xl text-xs text-main"
                 />
               </div>
             </div>
@@ -492,7 +499,7 @@ export function SettingsClient({
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-bold transition shadow"
+              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-md shadow-emerald-950/40"
             >
               {loading ? "Saving..." : "Save Settings & Slug"}
             </button>
@@ -505,27 +512,27 @@ export function SettingsClient({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold text-white flex items-center">
-                <Users className="w-5 h-5 text-emerald-400 mr-2" />
+              <h2 className="text-lg font-bold text-main flex items-center">
+                <Users className="w-5 h-5 text-emerald-500 mr-2" />
                 Staff Directory & Role-Based Access Control (RBAC)
               </h2>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Role enforcement: <strong className="text-white">reception</strong> cannot delete members or edit financial UPI settings.
+              <p className="text-xs text-muted-theme mt-0.5">
+                Role enforcement: <strong className="text-main">reception</strong> cannot delete members or edit financial UPI settings.
               </p>
             </div>
 
             <button
               onClick={() => setIsStaffModalOpen(true)}
-              className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center shadow"
+              className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center shadow-xs"
             >
               <Plus className="w-3.5 h-3.5 mr-1" />
               Invite Staff
             </button>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-gray-800/80 text-gray-400 font-semibold uppercase">
+          <div className="bg-surface border border-theme rounded-2xl overflow-hidden shadow-xs">
+            <table className="w-full text-left text-xs responsive-table">
+              <thead className="bg-app text-muted-theme font-semibold uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="py-3 px-4">Staff Name</th>
                   <th className="py-3 px-4">Email</th>
@@ -535,33 +542,33 @@ export function SettingsClient({
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800">
+              <tbody className="divide-y divide-theme">
                 {staffList.map((st) => (
-                  <tr key={st.id} className="hover:bg-gray-800/40">
-                    <td className="py-3 px-4 font-bold text-white">{st.full_name}</td>
-                    <td className="py-3 px-4 text-gray-300">{st.email}</td>
-                    <td className="py-3 px-4 text-gray-400">{st.phone || "—"}</td>
-                    <td className="py-3 px-4">
+                  <tr key={st.id} className="hover:bg-app/50 transition">
+                    <td data-label="Staff Name" className="py-3.5 px-4 font-bold text-main">{st.full_name}</td>
+                    <td data-label="Email" className="py-3.5 px-4 text-muted-theme">{st.email}</td>
+                    <td data-label="Phone" className="py-3.5 px-4 text-muted-theme font-mono">{st.phone || "—"}</td>
+                    <td data-label="Role" className="py-3.5 px-4">
                       <span
-                        className={`px-2 py-0.5 rounded text-[11px] font-bold border uppercase ${
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase ${
                           st.role === "owner"
-                            ? "bg-purple-950 text-purple-300 border-purple-800"
+                            ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
                             : st.role === "manager"
-                            ? "bg-blue-950 text-blue-300 border-blue-800"
-                            : "bg-gray-800 text-gray-300 border-gray-700"
+                            ? "bg-blue-500/10 text-blue-400 border-blue-500/30"
+                            : "bg-surface text-muted-theme border-theme"
                         }`}
                       >
                         {st.role}
                       </span>
                     </td>
-                    <td className="py-3 px-4">
-                      <span className="text-emerald-400 font-semibold text-[11px]">● {st.status}</span>
+                    <td data-label="Status" className="py-3.5 px-4">
+                      <span className="text-emerald-500 font-semibold text-[11px]">● {st.status}</span>
                     </td>
-                    <td className="py-3 px-4 text-right">
+                    <td data-label="Actions" className="py-3.5 px-4 text-right">
                       {st.role !== "owner" && (
                         <button
                           onClick={() => handleRemoveStaff(st.id)}
-                          className="text-gray-400 hover:text-red-400 p-1"
+                          className="text-muted-theme hover:text-rose-400 p-1"
                           title="Remove staff"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -577,44 +584,44 @@ export function SettingsClient({
           {/* Invite Staff Modal */}
           {isStaffModalOpen && (
             <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="bg-gray-900 border border-gray-800 rounded-xl max-w-md w-full p-6 shadow-2xl relative">
-                <h3 className="text-base font-bold text-white mb-2">Invite Staff Member</h3>
+              <div className="bg-surface border border-theme rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+                <h3 className="text-base font-bold text-main mb-2">Invite Staff Member</h3>
                 <form onSubmit={handleAddStaff} className="space-y-4 text-xs">
                   <div>
-                    <label className="block text-gray-300 mb-1">Full Name *</label>
+                    <label className="block text-main mb-1 font-semibold">Full Name *</label>
                     <input
                       type="text"
                       required
                       value={staffName}
                       onChange={(e) => setStaffName(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-main text-xs focus:outline-none focus:border-emerald-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-300 mb-1">Email Address *</label>
+                    <label className="block text-main mb-1 font-semibold">Email Address *</label>
                     <input
                       type="email"
                       required
                       value={staffEmail}
                       onChange={(e) => setStaffEmail(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-main text-xs focus:outline-none focus:border-emerald-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-300 mb-1">Phone</label>
+                    <label className="block text-main mb-1 font-semibold">Phone</label>
                     <input
                       type="tel"
                       value={staffPhone}
                       onChange={(e) => setStaffPhone(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-main text-xs focus:outline-none focus:border-emerald-500 font-mono"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-300 mb-1">RBAC Role *</label>
+                    <label className="block text-main mb-1 font-semibold">RBAC Role *</label>
                     <select
                       value={staffRole}
                       onChange={(e) => setStaffRole(e.target.value as StaffRole)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-main text-xs focus:outline-none focus:border-emerald-500"
                     >
                       <option value="reception">Reception (Check-ins & admissions only, no delete)</option>
                       <option value="manager">Manager (Can manage members & floor, no financial changes)</option>
@@ -626,14 +633,14 @@ export function SettingsClient({
                     <button
                       type="button"
                       onClick={() => setIsStaffModalOpen(false)}
-                      className="px-3 py-1.5 bg-gray-800 text-gray-300 rounded-lg"
+                      className="px-3 py-1.5 bg-surface border border-theme text-muted-theme hover:text-main rounded-xl"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold"
+                      className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-xs"
                     >
                       Invite Member
                     </button>
@@ -649,18 +656,18 @@ export function SettingsClient({
       {activeTab === "security" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Change Password */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-sm">
-            <h2 className="text-base font-bold text-white mb-2 flex items-center">
-              <Key className="w-4 h-4 text-emerald-400 mr-2" />
+          <div className="bg-surface border border-theme rounded-2xl p-6 shadow-xs">
+            <h2 className="text-base font-bold text-main mb-2 flex items-center">
+              <Key className="w-4 h-4 text-emerald-500 mr-2" />
               Update Account Password
             </h2>
-            <p className="text-xs text-gray-400 mb-4">
-              Updates your Supabase Auth credentials.
+            <p className="text-xs text-muted-theme mb-4">
+              Updates your Supabase Auth credentials for Kapil Rajput.
             </p>
 
             <form onSubmit={handleChangePassword} className="space-y-4 text-xs">
               <div>
-                <label className="block text-gray-300 mb-1">New Password (min 6 characters)</label>
+                <label className="block text-main mb-1 font-semibold">New Password (min 6 characters)</label>
                 <input
                   type="password"
                   required
@@ -668,13 +675,13 @@ export function SettingsClient({
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white"
+                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading || !newPassword}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold transition"
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition shadow-xs"
               >
                 Update Password
               </button>
@@ -682,38 +689,38 @@ export function SettingsClient({
           </div>
 
           {/* 2FA TOTP */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-sm">
-            <h2 className="text-base font-bold text-white mb-2 flex items-center">
-              <Smartphone className="w-4 h-4 text-emerald-400 mr-2" />
+          <div className="bg-surface border border-theme rounded-2xl p-6 shadow-xs">
+            <h2 className="text-base font-bold text-main mb-2 flex items-center">
+              <Smartphone className="w-4 h-4 text-emerald-500 mr-2" />
               Two-Factor Authentication (TOTP)
             </h2>
-            <p className="text-xs text-gray-400 mb-4">
+            <p className="text-xs text-muted-theme mb-4">
               Enrolls Google Authenticator, Authy, or 1Password via Supabase MFA.
             </p>
 
             {isMfaActive ? (
-              <div className="p-4 bg-emerald-950/40 border border-emerald-800 rounded-xl text-xs space-y-2">
-                <span className="text-emerald-300 font-bold flex items-center">
+              <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs space-y-2">
+                <span className="text-emerald-400 font-bold flex items-center">
                   <CheckCircle2 className="w-4 h-4 mr-1.5" />
                   2FA is Active on your account
                 </span>
-                <p className="text-gray-400 text-[11px]">
+                <p className="text-muted-theme text-[11px]">
                   All owner logins require a 6-digit TOTP code.
                 </p>
               </div>
             ) : totpData ? (
               <form onSubmit={handleVerifyTotp} className="space-y-4 text-xs">
-                <div className="p-4 bg-gray-950 border border-gray-800 rounded-xl text-center space-y-2">
-                  <p className="text-gray-300">Scan this QR code in your Authenticator app:</p>
+                <div className="p-4 bg-app border border-theme rounded-xl text-center space-y-2">
+                  <p className="text-muted-theme">Scan this QR code in your Authenticator app:</p>
                   <div
-                    className="inline-block p-2 bg-white rounded-lg"
+                    className="inline-block p-2 bg-white rounded-xl shadow-xs"
                     dangerouslySetInnerHTML={{ __html: totpData.qrCode }}
                   />
-                  <p className="text-[10px] text-gray-500 font-mono">Secret: {totpData.secret}</p>
+                  <p className="text-[10px] text-muted-theme font-mono">Secret: {totpData.secret}</p>
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 mb-1">Enter 6-digit TOTP Code</label>
+                  <label className="block text-main mb-1 font-semibold">Enter 6-digit TOTP Code</label>
                   <input
                     type="text"
                     maxLength={6}
@@ -721,7 +728,7 @@ export function SettingsClient({
                     placeholder="123456"
                     value={totpCode}
                     onChange={(e) => setTotpCode(e.target.value)}
-                    className="w-full text-center px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-base font-mono font-bold text-white tracking-widest"
+                    className="w-full text-center px-3 py-2 bg-app border border-theme rounded-xl text-base font-mono font-bold text-main tracking-widest focus:outline-none focus:border-emerald-500"
                   />
                 </div>
 
@@ -729,14 +736,14 @@ export function SettingsClient({
                   <button
                     type="submit"
                     disabled={loading || totpCode.length < 6}
-                    className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold"
+                    className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-xs text-xs"
                   >
                     Verify & Activate 2FA
                   </button>
                   <button
                     type="button"
                     onClick={() => setTotpData(null)}
-                    className="px-3 py-2 bg-gray-800 text-gray-300 rounded-lg"
+                    className="px-3 py-2 bg-surface border border-theme text-muted-theme hover:text-main rounded-xl text-xs"
                   >
                     Cancel
                   </button>
@@ -744,14 +751,14 @@ export function SettingsClient({
               </form>
             ) : (
               <div>
-                <p className="text-xs text-gray-300 mb-4">
+                <p className="text-xs text-muted-theme mb-4">
                   Protect your gym's financial records and member data with hardware-backed TOTP security.
                 </p>
                 <button
                   type="button"
                   onClick={handleStartTotpEnroll}
                   disabled={loading}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center shadow"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center shadow-xs"
                 >
                   <Shield className="w-3.5 h-3.5 mr-1.5" />
                   Setup 2FA Authenticator
@@ -764,19 +771,19 @@ export function SettingsClient({
 
       {/* TAB 4: 9-Sheet Excel Export */}
       {activeTab === "export" && (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-sm space-y-5">
+        <div className="bg-surface border border-theme rounded-2xl p-6 shadow-xs space-y-5">
           <div>
-            <h2 className="text-base font-bold text-white flex items-center">
-              <FileSpreadsheet className="w-5 h-5 text-emerald-400 mr-2" />
+            <h2 className="text-base font-bold text-main flex items-center">
+              <FileSpreadsheet className="w-5 h-5 text-emerald-500 mr-2" />
               Multi-Sheet Master Excel Export (.xlsx)
             </h2>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-muted-theme mt-1">
               Exports a comprehensive 9-sheet workbook including Executive Summary, Members Master, Revenue, Attendance, Floor Live, Admissions, Leads, Staff, and Audit Trail.
             </p>
           </div>
 
-          <div className="p-4 bg-gray-800/40 rounded-xl border border-gray-700/60 text-xs space-y-3">
-            <span className="font-bold text-gray-200 block">Select Date Range Filter:</span>
+          <div className="p-4 bg-app rounded-xl border border-theme text-xs space-y-3">
+            <span className="font-bold text-main block">Select Date Range Filter:</span>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
               {[
                 { id: "all", label: "All Time" },
@@ -789,10 +796,10 @@ export function SettingsClient({
                   key={r.id}
                   type="button"
                   onClick={() => setDateRange(r.id)}
-                  className={`py-2 px-3 rounded-lg text-xs font-semibold transition border ${
+                  className={`py-2 px-3 rounded-xl text-xs font-semibold transition border ${
                     dateRange === r.id
-                      ? "bg-emerald-600 text-white border-emerald-500 shadow"
-                      : "bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700"
+                      ? "bg-emerald-600 text-white border-emerald-500 shadow-xs"
+                      : "bg-surface text-muted-theme border-theme hover:text-main"
                   }`}
                 >
                   {r.label}
@@ -800,7 +807,7 @@ export function SettingsClient({
               ))}
             </div>
 
-            <div className="pt-2 text-[11px] text-gray-400 space-y-1">
+            <div className="pt-2 text-[11px] text-muted-theme space-y-1">
               <p>🛡️ <strong>Formula-Injection Protected</strong>: Escapes all spreadsheet formula triggers (`=`, `+`, `-`, `@`) to protect accountants opening in Microsoft Excel.</p>
               <p>📊 <strong>9 Full Worksheets</strong>: Generates separate styled worksheets for each operational pillar.</p>
             </div>
@@ -823,18 +830,18 @@ export function SettingsClient({
       {activeTab === "audit" && (
         <div className="space-y-4">
           <div>
-            <h2 className="text-base font-bold text-white flex items-center">
-              <History className="w-4 h-4 text-emerald-400 mr-2" />
+            <h2 className="text-base font-bold text-main flex items-center">
+              <History className="w-4 h-4 text-emerald-500 mr-2" />
               Immutable Audit Trail
             </h2>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-theme">
               Tamper-proof log of member mutations, financial transactions, staff changes, and system events.
             </p>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-gray-800/80 text-gray-400 font-semibold uppercase">
+          <div className="bg-surface border border-theme rounded-2xl overflow-hidden shadow-xs">
+            <table className="w-full text-left text-xs responsive-table">
+              <thead className="bg-app text-muted-theme font-semibold uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="py-2.5 px-4">Action</th>
                   <th className="py-2.5 px-4">Entity</th>
@@ -843,22 +850,22 @@ export function SettingsClient({
                   <th className="py-2.5 px-4 text-right">Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800">
+              <tbody className="divide-y divide-theme">
                 {initialAuditLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-gray-800/40">
-                    <td className="py-2.5 px-4">
-                      <span className="font-mono font-bold text-white">{log.action}</span>
+                  <tr key={log.id} className="hover:bg-app/50 transition">
+                    <td data-label="Action" className="py-2.5 px-4">
+                      <span className="font-mono font-bold text-main">{log.action}</span>
                     </td>
-                    <td className="py-2.5 px-4">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-800 text-gray-300 border border-gray-700">
+                    <td data-label="Entity" className="py-2.5 px-4">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-surface text-muted-theme border border-theme">
                         {log.entity_type}
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 text-gray-300">{log.performed_by_email || "system"}</td>
-                    <td className="py-2.5 px-4 text-gray-400 font-mono text-[11px] max-w-xs truncate">
+                    <td data-label="Performed By" className="py-2.5 px-4 text-muted-theme">{log.performed_by_email || "system"}</td>
+                    <td data-label="Details" className="py-2.5 px-4 text-muted-theme font-mono text-[11px] max-w-xs truncate">
                       {JSON.stringify(log.details)}
                     </td>
-                    <td className="py-2.5 px-4 text-right text-gray-400 text-[11px]">
+                    <td data-label="Timestamp" className="py-2.5 px-4 text-right text-muted-theme text-[11px] font-mono">
                       {formatDate(log.created_at)} {formatTime(log.created_at)}
                     </td>
                   </tr>
