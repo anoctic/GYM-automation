@@ -57,7 +57,7 @@ export function BottomTabBar() {
     <nav
       role="navigation"
       aria-label="Main Navigation"
-      className="bottom-pill-nav lg:hidden"
+      className="bottom-pill-nav lg:!hidden"
       style={{
         bottom: "max(14px, env(safe-area-inset-bottom))",
       }}

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+
 :root {
   --lime: #C6F459;
   --lime-dark: #A3D929;
@@ -120,7 +122,7 @@ body {
 /* Hero Obsidian Collection Card */
 .hero-collection-card {
   background: var(--obsidian);
-  color: #FFFFFF;
+  color: #FFFFFF !important;
   border-radius: 22px;
   padding: 20px;
   margin-bottom: 14px;
@@ -130,6 +132,14 @@ body {
 
 .hero-collection-card:active {
   transform: scale(0.99);
+}
+
+.hero-collection-card .text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+.hero-collection-card strong {
+  color: #FFFFFF !important;
 }
 
 .collection-split {
@@ -226,6 +236,12 @@ body {
   justify-content: space-between;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
   z-index: 50;
+}
+
+@media (min-width: 1024px) {
+  .bottom-pill-nav {
+    display: none !important;
+  }
 }
 
 .bnav-item {
@@ -401,44 +417,12 @@ body {
   background: var(--text-dim);
 }
 
-/* Light Mode High-Contrast Accessible Text Overrides */
-[data-theme="light"] .text-slate-400 {
-  color: #475569 !important;
-}
-
-[data-theme="light"] .text-slate-300 {
-  color: #334155 !important;
-}
-
-[data-theme="light"] .text-slate-200 {
-  color: #1E293B !important;
-}
-
-[data-theme="light"] .text-emerald-400 {
-  color: #047857 !important;
-}
-
-[data-theme="light"] .text-amber-400 {
-  color: #B45309 !important;
-}
-
-[data-theme="light"] .text-blue-400 {
-  color: #1D4ED8 !important;
-}
-
-[data-theme="light"] .text-orange-400 {
-  color: #C2410C !important;
-}
-
-[data-theme="light"] .text-purple-400 {
-  color: #6D28D9 !important;
-}
-
+/* Light Mode High-Contrast Typography */
 [data-theme="light"] .card h1,
 [data-theme="light"] .card h2,
 [data-theme="light"] .card h3,
 [data-theme="light"] .card h4 {
-  color: #0F172A !important;
+  color: #0F172A;
 }
 
 [data-theme="light"] .card {
