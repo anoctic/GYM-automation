@@ -39,11 +39,11 @@ export function Header({
         </button>
 
         <div className="min-w-0 flex flex-col justify-center">
-          <div className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium leading-none mb-0.5">
+          <div className="text-[12px] text-slate-500 dark:text-slate-400 font-medium leading-none mb-0.5">
             Welcome back, Kapil
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white truncate max-w-[170px] sm:max-w-xs leading-tight font-display">
+            <span className="font-extrabold text-[16px] text-slate-900 dark:text-white truncate max-w-[170px] sm:max-w-xs leading-tight font-display tracking-tight">
               Fitness Planet Unisex Gym
             </span>
             <span className="owner-pill shrink-0 font-display">Owner</span>
@@ -64,17 +64,17 @@ export function Header({
         <Link
           href={`/checkin/${gymSlug}`}
           target="_blank"
-          className="hidden sm:flex px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-200 hover:opacity-90 transition items-center shadow-xs"
+          className="hidden sm:flex px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-[#111214] text-white dark:bg-[#C6F459] dark:text-[#111214] hover:opacity-90 transition items-center shadow-xs"
           title="Open Front-Desk Self Check-In Kiosk"
         >
-          <QrCode className="w-3.5 h-3.5 sm:mr-1.5 text-[var(--lime)]" />
+          <QrCode className="w-3.5 h-3.5 sm:mr-1.5 text-[var(--lime)] dark:text-[#111214]" />
           <span>Kiosk</span>
         </Link>
 
         {/* Theme Toggle Button */}
         <button
           onClick={toggleTheme}
-          className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition text-sm"
+          className="w-[42px] h-[42px] rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800/80 transition text-sm"
           aria-label="Toggle theme"
           title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
         >

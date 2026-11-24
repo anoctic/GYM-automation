@@ -77,12 +77,12 @@ export function Sidebar({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-[260px] bg-white dark:bg-[#14161A] border-r border-slate-200 dark:border-slate-800 shadow-sm flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-[260px] bg-white dark:bg-[#14161A] border-r border-[#E5E7EB] dark:border-[#262932] shadow-[0_4px_16px_rgba(17,18,20,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Brand Header */}
-        <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div className="p-4 border-b border-[#E5E7EB] dark:border-[#262932] flex items-center justify-between">
           <Link
             href="/"
             onClick={onClose}
@@ -90,7 +90,7 @@ export function Sidebar({
           >
             <FitnessPlanetLogo size="sm" showTagline={false} src={logoUrl} />
             <div className="flex flex-col min-w-0">
-              <span className="font-extrabold text-slate-900 dark:text-white text-sm tracking-tight truncate leading-tight group-hover:text-emerald-500 transition-colors font-display">
+              <span className="font-extrabold text-[#111214] dark:text-white text-[15px] tracking-tight truncate leading-tight group-hover:text-emerald-500 transition-colors font-display">
                 Fitness Planet
               </span>
               <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 tracking-wider uppercase font-display">
@@ -102,7 +102,7 @@ export function Sidebar({
           {/* Mobile Close Button */}
           <button
             onClick={onClose}
-            className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition"
+            className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-[#111214] dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition"
             aria-label="Close Sidebar"
           >
             <X className="w-5 h-5" />
@@ -110,7 +110,7 @@ export function Sidebar({
         </div>
 
         {/* Tenant Status Pill */}
-        <div className="px-4 py-2 bg-slate-50 dark:bg-white/[0.03] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+        <div className="px-4 py-2 bg-[#F8FAFC] dark:bg-[#1E2128]/50 border-b border-[#E5E7EB] dark:border-[#262932] flex items-center justify-between text-xs">
           {isDemo ? (
             <span className="inline-flex items-center text-amber-600 dark:text-amber-400 font-semibold">
               <Sparkles className="w-3.5 h-3.5 mr-1.5 shrink-0" />
@@ -126,7 +126,7 @@ export function Sidebar({
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="p-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/10 transition"
+            className="p-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-[#111214] dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/10 transition"
             title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
           >
             {theme === "dark" ? (
@@ -153,16 +153,16 @@ export function Sidebar({
                 onClick={onClose}
                 className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition group ${
                   isActive
-                    ? "bg-[var(--obsidian)] text-white dark:bg-[var(--lime)] dark:text-[var(--obsidian)] shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5"
+                    ? "bg-[#111214] text-white dark:bg-[#C6F459] dark:text-[#111214] shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-[#111214] dark:hover:text-white hover:bg-[#F3F3F5] dark:hover:bg-[#1E2128]"
                 }`}
               >
                 <div className="flex items-center space-x-3">
                   <Icon
                     className={`w-4 h-4 transition-colors ${
                       isActive
-                        ? "text-white dark:text-[var(--obsidian)]"
-                        : "text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white"
+                        ? "text-white dark:text-[#111214]"
+                        : "text-slate-500 dark:text-slate-400 group-hover:text-[#111214] dark:group-hover:text-white"
                     }`}
                   />
                   <span>{item.name}</span>
@@ -179,7 +179,7 @@ export function Sidebar({
           })}
 
           <div className="pt-3 pb-1">
-            <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-display">
               Public Touchpoints
             </span>
           </div>
@@ -201,7 +201,7 @@ export function Sidebar({
           <Link
             href={`/join/${gymSlug}`}
             target="_blank"
-            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition group"
+            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 border border-[#E5E7EB] dark:border-[#262932] transition group"
           >
             <div className="flex items-center space-x-3">
               <UserCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -212,11 +212,11 @@ export function Sidebar({
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-white/[0.02] space-y-2">
+        <div className="p-3 border-t border-[#E5E7EB] dark:border-[#262932] bg-[#F8FAFC]/90 dark:bg-[#14161A] space-y-2">
           {/* Owner Identity */}
           <div className="flex items-center justify-between px-2 py-1.5">
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+              <span className="text-xs font-bold text-[#111214] dark:text-white truncate">
                 Kapil Rajput
               </span>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate">

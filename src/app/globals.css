@@ -4,28 +4,30 @@
 
 :root {
   --lime: #C6F459;
-  --lime-dark: #A3D929;
+  --lime-hover: #B8E946;
   --obsidian: #111214;
   --obsidian-soft: #1C1E22;
 }
 
 :root,
 [data-theme="light"] {
-  --bg-app: #F4F5F7;
+  --bg-app: #F3F3F5;
   --bg-sidebar: #FFFFFF;
   --bg-card: #FFFFFF;
   --bg-card-hover: #F8FAFC;
-  --bg-subtle: #E2E8F0;
+  --bg-subtle: #EAECEF;
   --bg-input: #FFFFFF;
-  --border-color: #E2E8F0;
-  --border-subtle: #EDF2F7;
+  --border-color: #E5E7EB;
+  --border-subtle: #F1F5F9;
   --border-glass: rgba(255, 255, 255, 0.85);
-  --text-main: #0F172A;
-  --text-muted: #334155;
-  --text-dim: #64748B;
+  --text-main: #111214;
+  --text-muted: #6B7280;
+  --text-dim: #9CA3AF;
   --accent-emerald: #059669;
   --accent-orange: #C2410C;
   --accent-gold: #B45309;
+  --shadow: 0 4px 16px rgba(17, 18, 20, 0.04);
+  --shadow-sm: 0 2px 8px rgba(17, 18, 20, 0.03);
 }
 
 [data-theme="dark"] {
@@ -44,6 +46,8 @@
   --accent-emerald: #10b981;
   --accent-orange: #ea580c;
   --accent-gold: #f59e0b;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 body {
@@ -63,21 +67,29 @@ button, input, select, textarea {
   font-family: var(--font-sans), inherit;
 }
 
-/* Space Grotesk Display Headings & Brand Titles */
+/* Outfit Display Headings & Brand Titles */
 h1, h2, h3, h4, h5, h6,
 .font-display {
-  font-family: var(--font-display), "Space Grotesk", var(--font-sans), sans-serif;
+  font-family: var(--font-display), "Outfit", sans-serif;
   letter-spacing: -0.02em;
 }
 
-/* Number displays with Space Grotesk & tabular-nums */
+.page-title {
+  font-family: var(--font-display), "Outfit", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+/* Number displays with Outfit & tabular-nums */
 .hero-collection-card .text-3xl,
 .hero-collection-card .text-4xl,
 .hero-collection-card .text-5xl,
 .hero-collection-card strong,
 .mini-stat .num,
 .font-display-num {
-  font-family: var(--font-display), "Space Grotesk", sans-serif;
+  font-family: var(--font-display), "Outfit", sans-serif;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
@@ -150,19 +162,35 @@ h1, h2, h3, h4, h5, h6,
   padding: 20px;
   margin-bottom: 14px;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .hero-collection-card:active {
   transform: scale(0.99);
 }
 
+.hero-collection-card .hero-amount,
+.hero-collection-card .text-3xl,
+.hero-collection-card .text-4xl,
+.hero-collection-card .text-5xl {
+  font-family: var(--font-display), "Outfit", sans-serif;
+  font-size: 36px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #FFFFFF !important;
+  line-height: 1.15;
+}
+
 .hero-collection-card .text-slate-400 {
-  color: #94A3B8 !important;
+  color: #9CA3AF !important;
 }
 
 .hero-collection-card strong {
   color: #FFFFFF !important;
+  font-family: var(--font-display), "Outfit", sans-serif;
+  font-variant-numeric: tabular-nums;
 }
 
 .collection-split {
@@ -171,7 +199,7 @@ h1, h2, h3, h4, h5, h6,
   justify-content: space-between;
   margin-top: 16px;
   padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   font-size: 13px;
   font-weight: 600;
 }
@@ -183,7 +211,8 @@ h1, h2, h3, h4, h5, h6,
   border-radius: 16px;
   padding: 12px 10px;
   text-align: left;
-  transition: transform 0.15s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .mini-stat:active {
@@ -191,15 +220,18 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .mini-stat .num {
+  font-family: var(--font-display), "Outfit", sans-serif;
   font-size: 20px;
   font-weight: 800;
   line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
 .mini-stat .lbl {
   font-size: 11.5px;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
   margin-top: 4px;
 }
 
@@ -215,11 +247,16 @@ h1, h2, h3, h4, h5, h6,
   gap: 12px;
   margin: 12px 0;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .setup-banner:active {
   transform: scale(0.99);
+}
+
+.setup-banner:hover {
+  box-shadow: var(--shadow);
 }
 
 .setup-check-circle {
@@ -421,6 +458,42 @@ h1, h2, h3, h4, h5, h6,
 .font-mono {
   font-family: var(--font-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-variant-numeric: tabular-nums;
+}
+
+/* Monospace Code Pill (Member codes FP-93, Receipt IDs, UPI VPAs) */
+.mono-pill,
+.code-pill {
+  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  background-color: var(--bg-subtle);
+  color: var(--text-main);
+  padding: 2.5px 8px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+}
+
+/* Fintech Card System */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  color: var(--text-main);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 24px rgba(17, 18, 20, 0.06);
+}
+
+[data-theme="dark"] .card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 /* Custom Scrollbar */

@@ -1,21 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppShell } from "@/components/AppShell";
 import { PwaRegister } from "@/components/PwaRegister";
 import { getTenantContext } from "@/lib/tenant/context";
 
-const spaceGrotesk = Space_Grotesk({
+const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: ["600", "700", "800", "900"],
   variable: "--font-display",
   display: "swap",
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["500", "600", "700", "800"],
   variable: "--font-sans",
   display: "swap",
 });
@@ -33,8 +33,8 @@ export const viewport: Viewport = {
   maximumScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F4F5F7" },
-    { media: "(prefers-color-scheme: dark)", color: "#111214" },
+    { media: "(prefers-color-scheme: light)", color: "#F3F3F5" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0B0D" },
   ],
 };
 
@@ -65,7 +65,7 @@ export default async function RootLayout({
     <html
       lang="en"
       data-theme="light"
-      className={`${spaceGrotesk.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
+      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
