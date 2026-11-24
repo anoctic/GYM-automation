@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && opennextjs-cloudflare build --skipBuild",
+    "build": "next build && node scripts/ensure-manifest.js && opennextjs-cloudflare build --skipBuild",
     "build:next": "next build",
     "build:local": "next build",
     "start": "next start",
