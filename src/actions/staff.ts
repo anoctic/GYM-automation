@@ -22,7 +22,7 @@ export interface UpdateStaffInput {
 }
 
 export async function getStaffMembers() {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   const { data, error } = await db
@@ -35,7 +35,7 @@ export async function getStaffMembers() {
     return { error: error.message, staff: [] };
   }
 
-  return { staff: (data as GymStaff[]) || [], isDemo };
+  return { staff: (data as GymStaff[]) || [] };
 }
 
 export async function createStaffMember(input: CreateStaffInput) {

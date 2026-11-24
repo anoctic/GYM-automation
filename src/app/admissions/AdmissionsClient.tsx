@@ -23,13 +23,11 @@ import Link from "next/link";
 interface AdmissionsClientProps {
   initialAdmissions: Admission[];
   gymId: string;
-  isDemo: boolean;
 }
 
 export function AdmissionsClient({
   initialAdmissions,
   gymId,
-  isDemo,
 }: AdmissionsClientProps) {
   const [admissions, setAdmissions] = useState<Admission[]>(initialAdmissions);
   const [statusFilter, setStatusFilter] = useState("pending");

@@ -1,18 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { BottomTabBar } from "./BottomTabBar";
-import { toggleDemoMode, signOut } from "@/actions/auth";
+import { signOut } from "@/actions/auth";
 
 interface AppShellProps {
   children: React.ReactNode;
   gymName?: string;
   gymSlug?: string;
   logoUrl?: string | null;
-  isDemo?: boolean;
   userEmail?: string | null;
 }
 
@@ -21,11 +20,11 @@ export function AppShell({
   gymName = "Fitness Planet Unisex Gym",
   gymSlug = "fitness-planet-sikandrabad",
   logoUrl = "/fitness-planet-logo.png",
-  isDemo = false,
   userEmail = null,
 }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   // Public/standalone routes that should NOT render the main admin shell
   const isPublicRoute =
@@ -33,12 +32,10 @@ export function AppShell({
     pathname.startsWith("/join") ||
     pathname === "/login";
 
-  async function handleToggleDemo() {
-    await toggleDemoMode(!isDemo);
-  }
-
   async function handleSignOut() {
     await signOut();
+    router.push("/login");
+    router.refresh();
   }
 
   if (isPublicRoute) {
@@ -56,11 +53,9 @@ export function AppShell({
         gymName={gymName}
         gymSlug={gymSlug}
         logoUrl={logoUrl}
-        isDemo={isDemo}
         userEmail={userEmail}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        onToggleDemo={handleToggleDemo}
         onSignOut={handleSignOut}
       />
 
@@ -70,9 +65,7 @@ export function AppShell({
           gymName={gymName}
           gymSlug={gymSlug}
           logoUrl={logoUrl}
-          isDemo={isDemo}
           onOpenSidebar={() => setSidebarOpen(true)}
-          onToggleDemo={handleToggleDemo}
         />
 
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 lg:pb-8">
@@ -80,7 +73,7 @@ export function AppShell({
         </main>
       </div>
 
-      {/* iOS Liquid Glass Bottom Navigation Bar (Mobile / Tablet) */}
+      {/* Bottom Navigation Bar (Mobile / Tablet) */}
       <BottomTabBar />
     </div>
   );

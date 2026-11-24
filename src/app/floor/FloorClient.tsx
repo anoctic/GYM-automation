@@ -21,14 +21,12 @@ interface FloorClientProps {
   initialActiveSessions: AttendanceLog[];
   allMembers: Member[];
   initialHistory: AttendanceLog[];
-  isDemo: boolean;
 }
 
 export function FloorClient({
   initialActiveSessions,
   allMembers,
   initialHistory,
-  isDemo,
 }: FloorClientProps) {
   const [activeSessions, setActiveSessions] = useState<AttendanceLog[]>(initialActiveSessions);
   const [history, setHistory] = useState<AttendanceLog[]>(initialHistory);

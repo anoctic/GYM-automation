@@ -41,18 +41,24 @@ import {
 interface MembersClientProps {
   initialMembers: Member[];
   plans: MembershipPlan[];
-  isDemo: boolean;
+  initialFilter?: string;
+  initialOpenEnroll?: boolean;
 }
 
-export function MembersClient({ initialMembers, plans, isDemo }: MembersClientProps) {
+export function MembersClient({
+  initialMembers,
+  plans,
+  initialFilter,
+  initialOpenEnroll = false,
+}: MembersClientProps) {
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>(initialFilter || "all");
   const [planFilter, setPlanFilter] = useState<string>("all");
   const [showArchived, setShowArchived] = useState(false);
 
   // Modal States
-  const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
+  const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(initialOpenEnroll);
   const [isRenewModalOpen, setIsRenewModalOpen] = useState(false);
   const [isDuesModalOpen, setIsDuesModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -143,6 +149,10 @@ export function MembersClient({ initialMembers, plans, isDemo }: MembersClientPr
   const [collectAmount, setCollectAmount] = useState<number>(0);
   const [collectMethod, setCollectMethod] = useState<PaymentMethod>("UPI");
 
+  const inactive3dCount = useMemo(() => {
+    return members.filter((m) => !m.deleted_at && m.is_inactive_3d).length;
+  }, [members]);
+
   // Filtered members list
   const filteredMembers = useMemo(() => {
     return members.filter((m) => {
@@ -153,6 +163,8 @@ export function MembersClient({ initialMembers, plans, isDemo }: MembersClientPr
       // Status filter
       if (statusFilter === "has_dues") {
         if (Number(m.pending_dues) <= 0) return false;
+      } else if (statusFilter === "inactive") {
+        if (!m.is_inactive_3d) return false;
       } else if (statusFilter !== "all" && m.status !== statusFilter) {
         return false;
       }
@@ -397,8 +409,11 @@ export function MembersClient({ initialMembers, plans, isDemo }: MembersClientPr
   function getWhatsAppReminder(m: Member) {
     const cleanPhone = m.phone.replace(/[^0-9]/g, "");
     const formattedPhone = cleanPhone.startsWith("91") ? cleanPhone : `91${cleanPhone}`;
+    const isAbsentReminder = m.is_inactive_3d && statusFilter === "inactive";
     const text = encodeURIComponent(
-      `Namaste ${m.full_name} ji! 🙏\nFitness Planet Unisex Gym, Sikandrabad se reminder:\nAapka membership (${m.membership_plans?.name || "Gym Plan"}) expiry date: ${formatDate(m.expiry_date)}.\nPending Dues: ₹${m.pending_dues}.\nKripya gym desk par aakar apna membership renew karwayein. Thank you! 💪`
+      isAbsentReminder
+        ? `Namaste ${m.full_name} ji! 💪\nFitness Planet Unisex Gym, Sikandrabad se reminder:\nAapne pichle ${m.days_since_checkin || 3} din se gym check-in nahi kiya hai. Apna workout routine continue rakhne ke liye aaj zaroor aayein! 🔥`
+        : `Namaste ${m.full_name} ji! 🙏\nFitness Planet Unisex Gym, Sikandrabad se reminder:\nAapka membership (${m.membership_plans?.name || "Gym Plan"}) expiry date: ${formatDate(m.expiry_date)}.\nPending Dues: ₹${m.pending_dues}.\nKripya gym desk par aakar apna membership renew karwayein. Thank you! 💪`
     );
     return `https://wa.me/${formattedPhone}?text=${text}`;
   }
@@ -505,6 +520,7 @@ export function MembersClient({ initialMembers, plans, isDemo }: MembersClientPr
           {[
             { id: "all", label: "All Members" },
             { id: "active", label: "Active" },
+            { id: "inactive", label: `Inactive (3+ Days) • ${inactive3dCount}` },
             { id: "trial", label: "Trial" },
             { id: "expired", label: "Expired" },
             { id: "has_dues", label: "Has Pending Dues ⚠️" },
@@ -515,7 +531,9 @@ export function MembersClient({ initialMembers, plans, isDemo }: MembersClientPr
               onClick={() => setStatusFilter(tab.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
                 statusFilter === tab.id
-                  ? "bg-emerald-600 text-white font-bold shadow-xs"
+                  ? tab.id === "inactive"
+                    ? "bg-amber-600 text-white font-bold shadow-xs"
+                    : "bg-[#111214] dark:bg-[#C6F459] text-white dark:text-[#111214] font-bold shadow-xs"
                   : "bg-input-field text-muted-theme hover:text-main"
               }`}
             >
@@ -594,25 +612,38 @@ export function MembersClient({ initialMembers, plans, isDemo }: MembersClientPr
                         )}
                         <p className="text-[11px] text-dim-theme">
                           Sessions: <strong className="text-muted-theme">{m.total_sessions}</strong>
+                          {m.last_check_in_at && (
+                            <span className="ml-1.5">• Last: {formatDate(m.last_check_in_at)}</span>
+                          )}
                         </p>
                       </div>
                     </td>
 
                     {/* Status Pill */}
                     <td className="py-3.5 px-4" data-label="Status">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${
-                          m.status === "active"
-                            ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
-                            : m.status === "expired"
-                            ? "bg-red-500/15 text-red-400 border-red-500/30"
-                            : m.status === "frozen"
-                            ? "bg-purple-500/15 text-purple-400 border-purple-500/30"
-                            : "bg-blue-500/15 text-blue-400 border-blue-500/30"
-                        }`}
-                      >
-                        {m.status}
-                      </span>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${
+                            m.status === "active"
+                              ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30"
+                              : m.status === "expired"
+                              ? "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30"
+                              : m.status === "frozen"
+                              ? "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30"
+                              : "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30"
+                          }`}
+                        >
+                          {m.status}
+                        </span>
+                        {m.is_inactive_3d && (
+                          <span
+                            className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30"
+                            title="No check-in for 3+ days"
+                          >
+                            Absent {m.days_since_checkin}d
+                          </span>
+                        )}
+                      </div>
                     </td>
 
                     {/* Actions Menu */}

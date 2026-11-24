@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { updateGymSettings } from "@/actions/gym";
 import { createStaffMember, updateStaffMember, deleteStaffMember } from "@/actions/staff";
-import { changePassword, enrollMfaTotp, verifyMfaTotp, unenrollMfa } from "@/actions/security";
+import {
+  updateAdminCredentials,
+  enrollMfaTotp,
+  verifyMfaTotp,
+  type AdminCredentialsInfo,
+} from "@/actions/security";
 import { formatDate, formatTime } from "@/lib/utils";
 import type { Gym, UpiSlot, GymStaff, StaffRole, AuditLog } from "@/types/database";
 import {
@@ -24,27 +29,30 @@ import {
   Lock,
   Smartphone,
   Eye,
+  EyeOff,
   History,
   Clock,
   Sparkles,
   Upload,
   Image as ImageIcon,
   RefreshCw,
+  User,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 
 interface SettingsClientProps {
   gym: Gym;
-  isDemo: boolean;
   initialStaff: GymStaff[];
   initialAuditLogs: AuditLog[];
+  initialAdminCredentials: AdminCredentialsInfo;
 }
 
 export function SettingsClient({
   gym,
-  isDemo,
   initialStaff,
   initialAuditLogs,
+  initialAdminCredentials,
 }: SettingsClientProps) {
   const [activeTab, setActiveTab] = useState<"general" | "staff" | "security" | "export" | "audit">("general");
 
@@ -79,8 +87,15 @@ export function SettingsClient({
   const [staffPhone, setStaffPhone] = useState("");
   const [staffRole, setStaffRole] = useState<StaffRole>("reception");
 
-  // Security & 2FA State
+  // Security, Admin Credentials & 2FA State
+  const [adminUsername, setAdminUsername] = useState(initialAdminCredentials.username || "kapilrajput");
+  const [adminEmail, setAdminEmail] = useState(
+    initialAdminCredentials.email || gym.email || "fitnessplanet.sikandrabad@gmail.com"
+  );
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPasswords, setShowPasswords] = useState(false);
   const [totpData, setTotpData] = useState<{ factorId: string; qrCode: string; secret: string } | null>(null);
   const [totpCode, setTotpCode] = useState("");
   const [isMfaActive, setIsMfaActive] = useState(false);
@@ -199,18 +214,37 @@ export function SettingsClient({
     }
   }
 
-  // 4. Change Password
-  async function handleChangePassword(e: React.FormEvent) {
+  // 4. Update Admin Login Credentials & Password
+  async function handleUpdateAdminCredentials(e: React.FormEvent) {
     e.preventDefault();
+    setMessage(null);
+
+    if (newPassword && newPassword !== confirmPassword) {
+      setMessage({ text: "New password and confirm password do not match.", type: "error" });
+      return;
+    }
+
     setLoading(true);
-    const res = await changePassword(newPassword);
+    const res = await updateAdminCredentials({
+      currentPassword,
+      newUsername: adminUsername,
+      newEmail: adminEmail,
+      newPassword: newPassword || undefined,
+    });
     setLoading(false);
 
     if (res.error) {
       setMessage({ text: res.error, type: "error" });
     } else {
+      setCurrentPassword("");
       setNewPassword("");
-      setMessage({ text: "Account password updated securely!", type: "success" });
+      setConfirmPassword("");
+      setMessage({
+        text: newPassword
+          ? "Admin username, email & password updated securely!"
+          : "Admin username & login email updated securely!",
+        type: "success",
+      });
     }
   }
 
@@ -773,38 +807,111 @@ export function SettingsClient({
         </div>
       )}
 
-      {/* TAB 3: Security & 2FA */}
+      {/* TAB 3: Security & Admin Credentials */}
       {activeTab === "security" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Change Password */}
+          {/* Update Admin Credentials & Password */}
           <div className="bg-surface border border-theme rounded-2xl p-6 shadow-xs">
-            <h2 className="text-base font-bold text-main mb-2 flex items-center">
-              <Key className="w-4 h-4 text-emerald-500 mr-2" />
-              Update Account Password
-            </h2>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-base font-bold text-main flex items-center">
+                <Key className="w-4 h-4 text-emerald-500 mr-2" />
+                Admin Login Credentials &amp; Password
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowPasswords(!showPasswords)}
+                className="text-[11px] font-bold text-muted-theme hover:text-main flex items-center gap-1"
+              >
+                {showPasswords ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                <span>{showPasswords ? "Hide" : "Show"}</span>
+              </button>
+            </div>
             <p className="text-xs text-muted-theme mb-4">
-              Updates your Supabase Auth credentials for Kapil Rajput.
+              Change the Admin Username, Login Email, or Password used on the login screen.
             </p>
 
-            <form onSubmit={handleChangePassword} className="space-y-4 text-xs">
-              <div>
-                <label className="block text-main mb-1 font-semibold">New Password (min 6 characters)</label>
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main focus:outline-none focus:border-emerald-500"
-                />
+            <form onSubmit={handleUpdateAdminCredentials} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-main mb-1 font-semibold">Admin Username *</label>
+                  <div className="relative">
+                    <User className="w-3.5 h-3.5 absolute left-3 top-2.5 text-muted-theme" />
+                    <input
+                      type="text"
+                      required
+                      value={adminUsername}
+                      onChange={(e) => setAdminUsername(e.target.value)}
+                      placeholder="kapilrajput"
+                      className="w-full pl-8 pr-3 py-2 bg-app border border-theme rounded-xl text-xs text-main font-mono focus:outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-main mb-1 font-semibold">Login Email *</label>
+                  <div className="relative">
+                    <Mail className="w-3.5 h-3.5 absolute left-3 top-2.5 text-muted-theme" />
+                    <input
+                      type="email"
+                      required
+                      value={adminEmail}
+                      onChange={(e) => setAdminEmail(e.target.value)}
+                      placeholder="fitnessplanet.sikandrabad@gmail.com"
+                      className="w-full pl-8 pr-3 py-2 bg-app border border-theme rounded-xl text-xs text-main font-mono focus:outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                </div>
               </div>
+
+              <div>
+                <label className="block text-main mb-1 font-semibold">
+                  Current Password * <span className="text-muted-theme font-normal">(Required to save changes)</span>
+                </label>
+                <div className="relative">
+                  <Lock className="w-3.5 h-3.5 absolute left-3 top-2.5 text-muted-theme" />
+                  <input
+                    type={showPasswords ? "text" : "password"}
+                    required
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter current password"
+                    className="w-full pl-8 pr-3 py-2 bg-app border border-theme rounded-xl text-xs text-main font-mono focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-subtle-theme">
+                <div>
+                  <label className="block text-main mb-1 font-semibold">
+                    New Password <span className="text-muted-theme font-normal">(Optional, min 6)</span>
+                  </label>
+                  <input
+                    type={showPasswords ? "text" : "password"}
+                    minLength={6}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Leave blank to keep same"
+                    className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main font-mono focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-main mb-1 font-semibold">Confirm New Password</label>
+                  <input
+                    type={showPasswords ? "text" : "password"}
+                    minLength={6}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Re-enter new password"
+                    className="w-full px-3 py-2 bg-app border border-theme rounded-xl text-xs text-main font-mono focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+
               <button
                 type="submit"
-                disabled={loading || !newPassword}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition shadow-xs"
+                disabled={loading || !currentPassword}
+                className="w-full sm:w-auto px-5 py-2.5 bg-[#111214] dark:bg-[#C6F459] text-white dark:text-[#111214] hover:opacity-90 disabled:opacity-50 rounded-xl text-xs font-extrabold transition shadow-xs"
               >
-                Update Password
+                {loading ? "Saving Credentials..." : "Save Login Credentials"}
               </button>
             </form>
           </div>

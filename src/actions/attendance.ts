@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import type { AttendanceLog, AttendanceMethod } from "@/types/database";
 
 export async function getActiveFloorMembers() {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   const { data, error } = await db
@@ -30,10 +30,10 @@ export async function getActiveFloorMembers() {
     return { error: error.message, activeSessions: [] };
   }
 
-  return { activeSessions: (data as AttendanceLog[]) || [], isDemo };
+  return { activeSessions: (data as AttendanceLog[]) || [] };
 }
 
-export async function getAttendanceHistory(limit: number = 20) {
+export async function getAttendanceHistory(limit: number = 250) {
   const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
@@ -46,7 +46,8 @@ export async function getAttendanceHistory(limit: number = 20) {
         full_name,
         member_code,
         phone,
-        status
+        status,
+        pending_dues
       )
     `)
     .eq("gym_id", gymId)
@@ -59,6 +60,43 @@ export async function getAttendanceHistory(limit: number = 20) {
 
   const logsList = (data as AttendanceLog[]) || [];
   return { logs: logsList, history: logsList };
+}
+
+export async function getAttendanceByDate(dateStr: string) {
+  const { gymId } = await getTenantContext();
+  const db = createAdminClient() as any;
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    return { error: "Invalid date format", logs: [] };
+  }
+
+  // Indian Standard Time (+05:30) day boundaries so Sikandrabad gym sessions match calendar dates accurately
+  const startIso = new Date(`${dateStr}T00:00:00+05:30`).toISOString();
+  const endIso = new Date(`${dateStr}T23:59:59.999+05:30`).toISOString();
+
+  const { data, error } = await db
+    .from("attendance_logs")
+    .select(`
+      *,
+      members (
+        id,
+        full_name,
+        member_code,
+        phone,
+        status,
+        pending_dues
+      )
+    `)
+    .eq("gym_id", gymId)
+    .gte("check_in_at", startIso)
+    .lte("check_in_at", endIso)
+    .order("check_in_at", { ascending: false });
+
+  if (error) {
+    return { error: error.message, logs: [] };
+  }
+
+  return { logs: (data as AttendanceLog[]) || [] };
 }
 
 export async function checkInMember(
@@ -97,7 +135,7 @@ export async function checkInMember(
     };
   }
 
-  // 3. Log check-in
+  // 3. Log check-in (timer starts now)
   const { data: log, error: logError } = await db
     .from("attendance_logs")
     .insert({
@@ -123,8 +161,10 @@ export async function checkInMember(
     })
     .eq("id", memberId);
 
+  revalidatePath("/attendance");
   revalidatePath("/floor");
   revalidatePath("/members");
+  revalidatePath("/");
   return {
     success: true,
     log: log as AttendanceLog,
@@ -144,14 +184,27 @@ export async function checkOutMember(attendanceLogId: string) {
     })
     .eq("id", attendanceLogId)
     .eq("gym_id", gymId)
-    .select("*")
+    .select(`
+      *,
+      members (
+        id,
+        full_name,
+        member_code,
+        phone,
+        status,
+        pending_dues
+      )
+    `)
     .single();
 
   if (error) {
     return { error: error.message };
   }
 
+  revalidatePath("/attendance");
   revalidatePath("/floor");
+  revalidatePath("/members");
+  revalidatePath("/");
   return { success: true, log: data as AttendanceLog };
 }
 
@@ -175,6 +228,8 @@ export async function bulkCheckOutAll() {
   }
 
   const count = data?.length || 0;
+  revalidatePath("/attendance");
   revalidatePath("/floor");
+  revalidatePath("/");
   return { success: true, count };
 }

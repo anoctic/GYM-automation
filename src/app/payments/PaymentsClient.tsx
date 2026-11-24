@@ -28,7 +28,6 @@ interface PaymentsClientProps {
   payments: Payment[];
   membersWithDues: Member[];
   allMembers: Member[];
-  isDemo: boolean;
 }
 
 export function PaymentsClient({
@@ -36,7 +35,6 @@ export function PaymentsClient({
   payments: initialPayments,
   membersWithDues: initialDues,
   allMembers,
-  isDemo,
 }: PaymentsClientProps) {
   const [payments, setPayments] = useState<Payment[]>(initialPayments);
   const [membersWithDues, setMembersWithDues] = useState<Member[]>(initialDues);

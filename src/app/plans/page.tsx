@@ -1,8 +1,15 @@
+import { redirect } from "next/navigation";
 import { getPlans } from "@/actions/plans";
+import { getTenantContext } from "@/lib/tenant/context";
 import { PlansClient } from "./PlansClient";
 
 export default async function PlansPage() {
-  const { plans, isDemo } = await getPlans();
+  const { isAuthenticated } = await getTenantContext();
+  if (!isAuthenticated) {
+    redirect("/login");
+  }
 
-  return <PlansClient initialPlans={plans} isDemo={!!isDemo} />;
+  const { plans } = await getPlans();
+
+  return <PlansClient initialPlans={plans} />;
 }

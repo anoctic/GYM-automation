@@ -22,7 +22,6 @@ import {
 
 interface NotificationsClientProps {
   gym: Gym;
-  isDemo: boolean;
   members: Member[];
   activeSessions: AttendanceLog[];
   recentHistory: AttendanceLog[];
@@ -47,7 +46,6 @@ interface NotificationItem {
 
 export function NotificationsClient({
   gym,
-  isDemo,
   members,
   activeSessions,
   recentHistory,
@@ -150,6 +148,31 @@ export function NotificationsClient({
         isExternalAction: false,
       });
     });
+
+    // 5. Inactive Members (No check-in for 3+ days)
+    members
+      .filter((m) => m.is_inactive_3d)
+      .forEach((m) => {
+        const cleanPhone = m.phone.replace(/[^0-9]/g, "");
+        const formattedPhone = cleanPhone.startsWith("91") ? cleanPhone : `91${cleanPhone}`;
+        const daysAgo = m.days_since_checkin ?? 3;
+        const waMsg = encodeURIComponent(
+          `Namaste ${m.full_name} ji! 💪\n${gymName} se miss-you reminder:\nAapne pichle ${daysAgo} din se gym check-in nahi kiya hai. Apni fitness streak continue rakhne ke liye aaj zaroor aayein!`
+        );
+
+        list.push({
+          id: `inact-${m.id}`,
+          category: "attendance",
+          title: `Inactive Alert (${daysAgo}d Absent)`,
+          message: `${m.full_name} (${m.member_code}) hasn't checked in for ${daysAgo} days.`,
+          time: `${daysAgo}d ago`,
+          priority: "medium",
+          actionLabel: "WhatsApp Nudge",
+          actionUrl: `https://wa.me/${formattedPhone}?text=${waMsg}`,
+          isExternalAction: true,
+          member: m,
+        });
+      });
 
     return list;
   }, [members, activeSessions, leads, gymName]);

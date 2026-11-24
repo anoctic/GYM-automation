@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getTenantContext } from "@/lib/tenant/context";
 import { getActiveFloorMembers } from "@/actions/attendance";
 import { getFinancialSummary, getPayments } from "@/actions/payments";
@@ -8,7 +9,11 @@ import { DashboardClient } from "./DashboardClient";
 import type { Gym } from "@/types/database";
 
 export default async function DashboardPage() {
-  const { gym, isDemo } = await getTenantContext();
+  const { gym, isAuthenticated } = await getTenantContext();
+  if (!isAuthenticated) {
+    redirect("/login");
+  }
+
   const { members } = await getMembers();
   const { plans } = await getPlans();
   const { activeSessions } = await getActiveFloorMembers();
@@ -19,7 +24,6 @@ export default async function DashboardPage() {
   return (
     <DashboardClient
       gym={gym as Gym}
-      isDemo={isDemo}
       members={members}
       plans={plans}
       activeSessions={activeSessions}

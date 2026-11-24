@@ -2,32 +2,26 @@
 
 import React from "react";
 import Link from "next/link";
-import { Menu, QrCode, Sun, Moon, Sparkles, ShieldCheck, Dumbbell, ExternalLink } from "lucide-react";
+import { Menu, QrCode, Sun, Moon } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
-import { FitnessPlanetLogo } from "./FitnessPlanetLogo";
 
 interface HeaderProps {
   gymName?: string;
   gymSlug?: string;
   logoUrl?: string | null;
-  isDemo?: boolean;
   onOpenSidebar: () => void;
-  onToggleDemo?: () => void;
 }
 
 export function Header({
   gymName = "Fitness Planet Unisex Gym",
   gymSlug = "fitness-planet-sikandrabad",
-  logoUrl,
-  isDemo = false,
   onOpenSidebar,
-  onToggleDemo,
 }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white/95 dark:bg-[#14161A]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6">
-      {/* Left: Mobile Circle Menu & Brand Title (Matching Video) */}
+      {/* Left: Mobile Circle Menu & Brand Title */}
       <div className="flex items-center space-x-3 min-w-0">
         <button
           onClick={onOpenSidebar}
@@ -44,28 +38,21 @@ export function Header({
           </div>
           <div className="flex items-center gap-2">
             <span className="font-extrabold text-[16px] text-slate-900 dark:text-white truncate max-w-[170px] sm:max-w-xs leading-tight font-display tracking-tight">
-              Fitness Planet Unisex Gym
+              {gymName}
             </span>
             <span className="owner-pill shrink-0 font-display">Owner</span>
           </div>
         </div>
       </div>
 
-      {/* Right: Actions, Theme Toggle, Kiosk Pill, Lime Bell */}
+      {/* Right: Kiosk Pill, Theme Toggle, Lime Bell */}
       <div className="flex items-center space-x-2 sm:space-x-3">
-        {isDemo && (
-          <span className="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-            <Sparkles className="w-3 h-3 mr-1 shrink-0" />
-            Demo Mode
-          </span>
-        )}
-
         {/* Public Kiosk Shortcut Button */}
         <Link
           href={`/checkin/${gymSlug}`}
           target="_blank"
           className="hidden sm:flex px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-[#111214] text-white dark:bg-[#C6F459] dark:text-[#111214] hover:opacity-90 transition items-center shadow-xs"
-          title="Open Front-Desk Self Check-In Kiosk"
+          title="Open Front-Desk Dual-QR Kiosk"
         >
           <QrCode className="w-3.5 h-3.5 sm:mr-1.5 text-[var(--lime)] dark:text-[#111214]" />
           <span>Kiosk</span>

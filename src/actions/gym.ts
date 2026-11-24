@@ -27,7 +27,7 @@ export interface UpdateGymInput {
 }
 
 export async function getGymDetails() {
-  const { gymId, isDemo, gym } = await getTenantContext();
+  const { gymId, gym } = await getTenantContext();
   const db = createAdminClient() as any;
 
   const { data, error } = await db
@@ -37,14 +37,14 @@ export async function getGymDetails() {
     .single();
 
   if (error || !data) {
-    return { gym, isDemo };
+    return { gym };
   }
 
-  return { gym: data as Gym, isDemo };
+  return { gym: data as Gym };
 }
 
 export async function updateGymSettings(input: UpdateGymInput) {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const userRole = await getCurrentUserRole();
   const db = createAdminClient() as any;
 
@@ -105,5 +105,5 @@ export async function updateGymSettings(input: UpdateGymInput) {
   });
 
   revalidatePath("/", "layout");
-  return { success: true, gym: data as Gym, isDemo };
+  return { success: true, gym: data as Gym };
 }

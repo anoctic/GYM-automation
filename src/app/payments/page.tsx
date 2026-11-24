@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getTenantContext } from "@/lib/tenant/context";
 import { getPayments } from "@/actions/payments";
 import { getMembers } from "@/actions/members";
@@ -5,7 +6,11 @@ import { PaymentsClient } from "./PaymentsClient";
 import type { Gym } from "@/types/database";
 
 export default async function PaymentsPage() {
-  const { gym, isDemo } = await getTenantContext();
+  const { gym, isAuthenticated } = await getTenantContext();
+  if (!isAuthenticated) {
+    redirect("/login");
+  }
+
   const { payments } = await getPayments();
   const { members } = await getMembers();
 
@@ -17,7 +22,6 @@ export default async function PaymentsPage() {
       payments={payments}
       membersWithDues={membersWithDues}
       allMembers={members}
-      isDemo={isDemo}
     />
   );
 }

@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { Payment } from "@/types/database";
 
 export async function getPayments(methodFilter?: string) {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   let query = db
@@ -31,7 +31,7 @@ export async function getPayments(methodFilter?: string) {
     return { error: error.message, payments: [] };
   }
 
-  return { payments: (data as Payment[]) || [], isDemo };
+  return { payments: (data as Payment[]) || [] };
 }
 
 export async function getFinancialSummary() {

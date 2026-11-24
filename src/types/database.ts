@@ -102,6 +102,9 @@ export interface Member {
   created_at: string;
   updated_at: string;
   membership_plans?: MembershipPlan | null;
+  last_check_in_at?: string | null;
+  days_since_checkin?: number | null;
+  is_inactive_3d?: boolean;
 }
 
 export interface Payment {

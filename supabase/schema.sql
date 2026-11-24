@@ -159,6 +159,16 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
   created_at TIMESTAMPTZ DEFAULT timezone('utc', now())
 );
 
+-- 10. ADMIN LOGIN CREDENTIALS (Protected by RLS + SECURITY DEFINER RPCs)
+CREATE TABLE IF NOT EXISTS public.gym_auth_credentials (
+  gym_id UUID PRIMARY KEY REFERENCES public.gyms(id) ON DELETE CASCADE,
+  username TEXT NOT NULL,
+  email TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  session_version INTEGER NOT NULL DEFAULT 1,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc', now())
+);
+
 -- ==============================================================================
 -- PERFORMANCE & HIGH-SPEED QUERY INDEXES
 -- ==============================================================================

@@ -1,47 +1,65 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { DEFAULT_GYM_ID } from "@/lib/tenant/context";
 import { notFound } from "next/navigation";
 import { KioskClient } from "./KioskClient";
-import type { Gym } from "@/types/database";
+import type { AttendanceLog, Gym } from "@/types/database";
 
 interface KioskPageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ mode?: string }>;
 }
 
-export default async function KioskPage({ params }: KioskPageProps) {
+export default async function KioskPage({ params, searchParams }: KioskPageProps) {
   const { slug } = await params;
+  const sp = await searchParams;
   const db = createAdminClient() as any;
 
-  // Resolve gym by slug (or fallback to demo gym)
+  const cleanSlug = decodeURIComponent(slug).trim().toLowerCase();
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanSlug);
+
+  // Resolve gym by slug or ID (fallback to primary Fitness Planet gym if slug is "default")
   let { data: gym } = await db
     .from("gyms")
     .select("*")
-    .eq("slug", slug.trim().toLowerCase())
+    .eq(isUuid ? "id" : "slug", cleanSlug)
     .maybeSingle();
 
-  if (!gym && slug === "demo") {
-    const { data: demoGym } = await db
+  if (!gym && (cleanSlug === "default" || cleanSlug === "fitness-planet")) {
+    const { data: defaultGym } = await db
       .from("gyms")
       .select("*")
-      .eq("id", "00000000-0000-0000-0000-000000000001")
+      .eq("id", DEFAULT_GYM_ID)
       .maybeSingle();
-    gym = demoGym;
+    gym = defaultGym;
   }
 
   if (!gym) {
     notFound();
   }
 
-  // Count active floor members right now
-  const { count: activeFloorCount } = await db
+  // Fetch active floor sessions right now with member details for live workout timers
+  const { data: activeSessions } = await db
     .from("attendance_logs")
-    .select("id", { count: "exact", head: true })
+    .select(`
+      *,
+      members (
+        id,
+        full_name,
+        member_code,
+        phone,
+        status,
+        pending_dues
+      )
+    `)
     .eq("gym_id", gym.id)
-    .is("check_out_at", null);
+    .is("check_out_at", null)
+    .order("check_in_at", { ascending: false });
 
   return (
     <KioskClient
       gym={gym as Gym}
-      activeFloorCount={activeFloorCount || 0}
+      initialActiveSessions={(activeSessions as AttendanceLog[]) || []}
+      initialMode={sp?.mode === "self" ? "self" : "desk"}
     />
   );
 }

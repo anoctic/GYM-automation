@@ -13,20 +13,34 @@ export interface CurrentUserRole {
 
 /**
  * Resolves current user's RBAC role for the active gym.
- * If user is the gym owner or demo mode is active, grants full 'owner' permissions.
- * If user is listed in gym_staff, returns their configured role.
+ * Grants owner permissions to authenticated admin session owners or Supabase gym owners.
  */
 export async function getCurrentUserRole(): Promise<CurrentUserRole> {
-  const { gymId, isDemo, user, gym } = await getTenantContext();
+  const { gymId, adminSession, user, gym } = await getTenantContext();
 
-  if (isDemo || (user && gym && gym.owner_id === user.id)) {
+  if (
+    adminSession?.role === "owner" ||
+    (user && gym && gym.owner_id === user.id)
+  ) {
     return {
       role: "owner",
       isOwner: true,
       canDeleteMembers: true,
       canEditFinancials: true,
       canManageStaff: true,
-      email: user?.email || "owner@anytimefit.in",
+      email: adminSession?.email || user?.email || gym?.email || "kapilrajput@fitnessplanet.in",
+    };
+  }
+
+  if (adminSession) {
+    const role: StaffRole = adminSession.role;
+    return {
+      role,
+      isOwner: false,
+      canDeleteMembers: role === "manager",
+      canEditFinancials: false,
+      canManageStaff: false,
+      email: adminSession.email,
     };
   }
 
@@ -47,18 +61,17 @@ export async function getCurrentUserRole(): Promise<CurrentUserRole> {
         canDeleteMembers: role === "owner" || role === "manager",
         canEditFinancials: role === "owner",
         canManageStaff: role === "owner",
-        email: user.email || "staff@gymos.cloud",
+        email: user.email || "staff@fitnessplanet.in",
       };
     }
   }
 
-  // Fallback to reception for safe defaults
   return {
     role: "reception",
     isOwner: false,
     canDeleteMembers: false,
     canEditFinancials: false,
     canManageStaff: false,
-    email: user?.email || "reception@gymos.cloud",
+    email: user?.email || "reception@fitnessplanet.in",
   };
 }

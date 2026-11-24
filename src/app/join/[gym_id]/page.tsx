@@ -7,26 +7,29 @@ interface JoinPageProps {
   params: Promise<{ gym_id: string }>;
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export default async function JoinGymPage({ params }: JoinPageProps) {
   const { gym_id } = await params;
   const admin = createAdminClient();
+  const cleanIdentifier = decodeURIComponent(gym_id).trim();
 
-  // Fetch gym profile
-  const { data: gym, error: gymError } = await admin
-    .from("gyms")
-    .select("*")
-    .eq("id", gym_id)
-    .single();
+  // Resolve gym by either UUID or slug
+  const gymQuery = UUID_REGEX.test(cleanIdentifier)
+    ? admin.from("gyms").select("*").eq("id", cleanIdentifier).maybeSingle()
+    : admin.from("gyms").select("*").eq("slug", cleanIdentifier.toLowerCase()).maybeSingle();
+
+  const { data: gym, error: gymError } = await gymQuery;
 
   if (gymError || !gym) {
     notFound();
   }
 
-  // Fetch active membership plans for this gym
+  // Fetch active membership plans for this resolved gym ID
   const { data: plans } = await admin
     .from("membership_plans")
     .select("*")
-    .eq("gym_id", gym_id)
+    .eq("gym_id", gym.id)
     .eq("is_active", true)
     .order("price", { ascending: true });
 

@@ -74,7 +74,7 @@ export async function submitAdmission(gymId: string, input: SubmitAdmissionInput
  * Owner retrieves all admissions for their gym
  */
 export async function getAdmissions(statusFilter: string = "pending") {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   let query = db
@@ -102,7 +102,7 @@ export async function getAdmissions(statusFilter: string = "pending") {
     return { error: error.message, admissions: [] };
   }
 
-  return { admissions: (data as Admission[]) || [], isDemo };
+  return { admissions: (data as Admission[]) || [] };
 }
 
 /**

@@ -38,7 +38,6 @@ import {
 
 interface DashboardClientProps {
   gym: Gym;
-  isDemo: boolean;
   members: Member[];
   plans: MembershipPlan[];
   activeSessions: AttendanceLog[];
@@ -57,7 +56,6 @@ interface DashboardClientProps {
 
 export function DashboardClient({
   gym,
-  isDemo,
   members,
   plans,
   activeSessions: initialSessions,
@@ -99,6 +97,7 @@ export function DashboardClient({
   const trialCount = members.filter((m) => m.status === "trial").length;
   const frozenCount = members.filter((m) => m.status === "frozen").length;
   const withDuesCount = members.filter((m) => Number(m.pending_dues) > 0).length;
+  const inactive3dCount = members.filter((m) => m.is_inactive_3d).length;
 
   // Expiring/Overdue Members (within next 7 days or already expired)
   const now = new Date();
@@ -255,11 +254,22 @@ export function DashboardClient({
                 {frozenCount} Frozen
               </span>
               {withDuesCount > 0 && (
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-500/20">
+                <Link
+                  href="/payments"
+                  className="inline-flex items-center px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-500/20 hover:opacity-85 transition"
+                >
                   <AlertCircle className="w-3.5 h-3.5 mr-1 text-amber-500" />
                   {withDuesCount} With Dues
-                </span>
+                </Link>
               )}
+              <Link
+                href="/members?filter=inactive"
+                className="inline-flex items-center px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 font-semibold border border-rose-200 dark:border-rose-500/20 hover:opacity-85 transition"
+                title="View members who haven't checked in for 3+ days"
+              >
+                <Clock className="w-3.5 h-3.5 mr-1 text-rose-500" />
+                {inactive3dCount} Inactive (3+ Days)
+              </Link>
             </div>
 
             {/* Quick Action Buttons (Matching Image 3) */}

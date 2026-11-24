@@ -57,7 +57,7 @@ export async function getMembers(filter?: {
   search?: string;
   onlyDeleted?: boolean;
 }) {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   let query = db
@@ -91,13 +91,47 @@ export async function getMembers(filter?: {
     query = query.or(`full_name.ilike.${term},phone.ilike.${term},member_code.ilike.${term}`);
   }
 
-  const { data, error } = await query;
+  const [{ data, error }, { data: recentLogs }] = await Promise.all([
+    query,
+    db
+      .from("attendance_logs")
+      .select("member_id, check_in_at")
+      .eq("gym_id", gymId)
+      .order("check_in_at", { ascending: false }),
+  ]);
 
   if (error) {
     return { error: error.message, members: [] };
   }
 
-  return { members: (data as Member[]) || [], isDemo };
+  // Build map of each member's most recent check-in timestamp
+  const latestCheckInByMember = new Map<string, string>();
+  for (const log of recentLogs || []) {
+    if (log.member_id && !latestCheckInByMember.has(log.member_id)) {
+      latestCheckInByMember.set(log.member_id, log.check_in_at);
+    }
+  }
+
+  const nowMs = Date.now();
+  const enrichedMembers: Member[] = ((data as Member[]) || []).map((m) => {
+    const lastCheckInAt = latestCheckInByMember.get(m.id) || null;
+    const referenceDateStr = lastCheckInAt || m.join_date || m.created_at;
+    const refMs = referenceDateStr ? new Date(referenceDateStr).getTime() : nowMs;
+    const daysSinceCheckIn = Math.max(0, Math.floor((nowMs - refMs) / (1000 * 60 * 60 * 24)));
+    const isInactive3d =
+      !m.deleted_at &&
+      (m.status === "active" || m.status === "trial") &&
+      daysSinceCheckIn >= 3;
+
+    return {
+      ...m,
+      last_check_in_at: lastCheckInAt,
+      days_since_checkin: daysSinceCheckIn,
+      is_inactive_3d: isInactive3d,
+    };
+  });
+
+  return { members: enrichedMembers };
 }
 
 export async function getMemberById(memberId: string) {
@@ -139,7 +173,7 @@ export async function getMemberById(memberId: string) {
 }
 
 export async function enrollMember(input: EnrollMemberInput) {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const userRole = await getCurrentUserRole();
   const db = createAdminClient() as any;
 
@@ -271,7 +305,7 @@ export async function enrollMember(input: EnrollMemberInput) {
   revalidatePath("/members");
   revalidatePath("/floor");
   revalidatePath("/payments");
-  return { success: true, member: member as Member, isDemo };
+  return { success: true, member: member as Member };
 }
 
 export async function renewMember(input: RenewMemberInput) {

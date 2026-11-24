@@ -31,11 +31,9 @@ interface SidebarProps {
   gymName?: string;
   gymSlug?: string;
   logoUrl?: string | null;
-  isDemo?: boolean;
   userEmail?: string | null;
   isOpen: boolean;
   onClose: () => void;
-  onToggleDemo?: () => void;
   onSignOut?: () => void;
 }
 
@@ -43,11 +41,9 @@ export function Sidebar({
   gymName = "Fitness Planet Unisex Gym",
   gymSlug = "fitness-planet-sikandrabad",
   logoUrl,
-  isDemo = false,
-  userEmail = "owner@fitnessplanet.in",
+  userEmail = "fitnessplanet.sikandrabad@gmail.com",
   isOpen,
   onClose,
-  onToggleDemo,
   onSignOut,
 }: SidebarProps) {
   const pathname = usePathname();
@@ -111,17 +107,10 @@ export function Sidebar({
 
         {/* Tenant Status Pill */}
         <div className="px-4 py-2 bg-[#F8FAFC] dark:bg-[#1E2128]/50 border-b border-[#E5E7EB] dark:border-[#262932] flex items-center justify-between text-xs">
-          {isDemo ? (
-            <span className="inline-flex items-center text-amber-600 dark:text-amber-400 font-semibold">
-              <Sparkles className="w-3.5 h-3.5 mr-1.5 shrink-0" />
-              Demo Mode Active
-            </span>
-          ) : (
-            <span className="inline-flex items-center text-emerald-600 dark:text-emerald-400 font-semibold">
-              <ShieldCheck className="w-3.5 h-3.5 mr-1.5 shrink-0" />
-              Live Gym Cloud
-            </span>
-          )}
+          <span className="inline-flex items-center text-emerald-600 dark:text-emerald-400 font-semibold">
+            <ShieldCheck className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+            Live Gym Cloud
+          </span>
 
           {/* Theme Toggle Button */}
           <button

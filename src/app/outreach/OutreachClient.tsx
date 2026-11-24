@@ -22,13 +22,12 @@ import {
 interface OutreachClientProps {
   gym: Gym;
   members: Member[];
-  isDemo: boolean;
 }
 
 type BucketType = "dues" | "expiring" | "expired" | "inactive" | "trials";
 type LanguageType = "hinglish" | "english" | "hindi";
 
-export function OutreachClient({ gym, members, isDemo }: OutreachClientProps) {
+export function OutreachClient({ gym, members }: OutreachClientProps) {
   const [activeBucket, setActiveBucket] = useState<BucketType>("dues");
   const [language, setLanguage] = useState<LanguageType>("hinglish");
   const [queueIndex, setQueueIndex] = useState(0);
@@ -50,7 +49,7 @@ export function OutreachClient({ gym, members, isDemo }: OutreachClientProps) {
         return exp >= now && exp <= next7Days;
       }),
       expired: members.filter((m) => m.status === "expired"),
-      inactive: members.filter((m) => m.status === "active" && m.total_sessions < 5),
+      inactive: members.filter((m) => m.is_inactive_3d),
       trials: members.filter((m) => m.status === "trial"),
     };
   }, [members]);

@@ -20,7 +20,7 @@ export interface UpdatePlanInput extends Partial<CreatePlanInput> {
 }
 
 export async function getPlans() {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   const { data, error } = await db
@@ -33,11 +33,11 @@ export async function getPlans() {
     return { error: error.message, plans: [] };
   }
 
-  return { plans: (data as MembershipPlan[]) || [], isDemo };
+  return { plans: (data as MembershipPlan[]) || [] };
 }
 
 export async function createPlan(input: CreatePlanInput) {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   if (!input.name || !input.duration_days || input.price === undefined) {
@@ -65,11 +65,11 @@ export async function createPlan(input: CreatePlanInput) {
   }
 
   revalidatePath("/plans");
-  return { success: true, plan: data as MembershipPlan, isDemo };
+  return { success: true, plan: data as MembershipPlan };
 }
 
 export async function updatePlan(planId: string, input: UpdatePlanInput) {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   const updatePayload: Record<string, any> = {
@@ -98,7 +98,7 @@ export async function updatePlan(planId: string, input: UpdatePlanInput) {
   }
 
   revalidatePath("/plans");
-  return { success: true, plan: data as MembershipPlan, isDemo };
+  return { success: true, plan: data as MembershipPlan };
 }
 
 export async function togglePlanStatus(planId: string) {

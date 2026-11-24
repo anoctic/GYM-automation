@@ -20,10 +20,9 @@ import {
 
 interface PlansClientProps {
   initialPlans: MembershipPlan[];
-  isDemo: boolean;
 }
 
-export function PlansClient({ initialPlans, isDemo }: PlansClientProps) {
+export function PlansClient({ initialPlans }: PlansClientProps) {
   const [plans, setPlans] = useState<MembershipPlan[]>(initialPlans);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);

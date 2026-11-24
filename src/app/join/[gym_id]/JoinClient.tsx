@@ -93,7 +93,7 @@ export function JoinClient({ gym, plans }: JoinClientProps) {
       <div className="text-center mb-8">
         <div className="flex justify-center mb-3">
           <div className="p-2 rounded-2xl bg-surface/80 border border-theme shadow-md shadow-emerald-950/20">
-            <FitnessPlanetLogo size="md" />
+            <FitnessPlanetLogo size="md" src={gym.logo_url} />
           </div>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-main tracking-tight uppercase">

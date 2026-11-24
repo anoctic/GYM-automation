@@ -13,7 +13,7 @@ export interface CreateLeadInput {
 }
 
 export async function getLeads(stageFilter?: string) {
-  const { gymId, isDemo } = await getTenantContext();
+  const { gymId } = await getTenantContext();
   const db = createAdminClient() as any;
 
   let query = db
@@ -32,7 +32,7 @@ export async function getLeads(stageFilter?: string) {
     return { error: error.message, leads: [] };
   }
 
-  return { leads: (data as Lead[]) || [], isDemo };
+  return { leads: (data as Lead[]) || [] };
 }
 
 export async function createLead(input: CreateLeadInput) {

@@ -59,7 +59,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { gym, isDemo, user } = await getTenantContext();
+  const { gym, adminSession, user } = await getTenantContext();
+  const displayEmail =
+    adminSession?.email ||
+    user?.email ||
+    gym?.email ||
+    "fitnessplanet.sikandrabad@gmail.com";
 
   return (
     <html
@@ -104,8 +109,7 @@ export default async function RootLayout({
             gymName={gym?.name || "Fitness Planet Unisex Gym"}
             gymSlug={gym?.slug || "fitness-planet-sikandrabad"}
             logoUrl={gym?.logo_url || "/fitness-planet-logo.png"}
-            isDemo={isDemo}
-            userEmail={user?.email || (isDemo ? "demo@fitnessplanet.in" : null)}
+            userEmail={displayEmail}
           >
             {children}
           </AppShell>

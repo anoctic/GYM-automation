@@ -19,7 +19,6 @@ import {
 
 interface LeadsClientProps {
   initialLeads: Lead[];
-  isDemo: boolean;
 }
 
 const STAGES: { stage: LeadStage; label: string; color: string }[] = [
@@ -31,7 +30,7 @@ const STAGES: { stage: LeadStage; label: string; color: string }[] = [
   { stage: "lost", label: "Lost", color: "bg-surface text-muted-theme border-theme" },
 ];
 
-export function LeadsClient({ initialLeads, isDemo }: LeadsClientProps) {
+export function LeadsClient({ initialLeads }: LeadsClientProps) {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState("");
