@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { notifyLocalMutation } from "@/lib/realtime/syncStore";
 import { updateGymSettings } from "@/actions/gym";
 import { createStaffMember, updateStaffMember, deleteStaffMember } from "@/actions/staff";
 import {
@@ -54,6 +56,7 @@ export function SettingsClient({
   initialAuditLogs,
   initialAdminCredentials,
 }: SettingsClientProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"general" | "staff" | "security" | "export" | "audit">("general");
 
   // Gym Profile State
@@ -105,6 +108,17 @@ export function SettingsClient({
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
+  useEffect(() => {
+    setStaffList(initialStaff);
+  }, [initialStaff]);
+
+  useEffect(() => {
+    setAdminUsername(initialAdminCredentials.username || "kapilrajput");
+    setAdminEmail(
+      initialAdminCredentials.email || gym.email || "fitnessplanet.sikandrabad@gmail.com"
+    );
+  }, [initialAdminCredentials, gym.email]);
 
   // Logo file upload handler
   function handleLogoFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -169,6 +183,7 @@ export function SettingsClient({
     if (res.error) {
       setMessage({ text: res.error, type: "error" });
     } else {
+      notifyLocalMutation(router, "/settings");
       setMessage({ text: "Fitness Planet profile, kiosk slug & Dual UPI settings updated!", type: "success" });
     }
   }
@@ -198,6 +213,7 @@ export function SettingsClient({
       setStaffName("");
       setStaffEmail("");
       setStaffPhone("");
+      notifyLocalMutation(router, "/settings");
       setMessage({ text: `Invited ${res.staff.full_name} as ${res.staff.role}!`, type: "success" });
     }
   }
@@ -210,6 +226,7 @@ export function SettingsClient({
       alert(res.error);
     } else if (res.success) {
       setStaffList((prev) => prev.filter((s) => s.id !== staffId));
+      notifyLocalMutation(router, "/settings");
       setMessage({ text: "Staff member removed.", type: "success" });
     }
   }
@@ -239,6 +256,7 @@ export function SettingsClient({
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+      notifyLocalMutation(router, "/settings");
       setMessage({
         text: newPassword
           ? "Admin username, email & password updated securely!"

@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { logAuditEvent } from "@/lib/audit/logger";
 import { getCurrentUserRole } from "@/lib/auth/rbac";
 import { revalidatePath } from "next/cache";
-import { generateMemberCode, generateReceiptNo } from "@/lib/utils";
+import { allocateNextMemberCode, allocateNextReceiptNo } from "@/lib/db/sequences";
 import type { Member, MembershipPlan, PaymentMethod, MemberStatus, Payment } from "@/types/database";
 
 export interface EnrollMemberInput {
@@ -202,13 +202,8 @@ export async function enrollMember(input: EnrollMemberInput) {
   const expiryDate = new Date(joinDate);
   expiryDate.setDate(expiryDate.getDate() + Number(plan.duration_days));
 
-  // 3. Generate unique member code (e.g. AF-1007)
-  const { count: memberCount } = await db
-    .from("members")
-    .select("id", { count: "exact", head: true })
-    .eq("gym_id", gymId);
-
-  const memberCode = generateMemberCode(memberCount || 0);
+  // 3. Generate unique collision-safe member code (e.g. FP-101)
+  const memberCode = await allocateNextMemberCode(db, gymId);
 
   // 4. Insert member
   const { data: member, error: memberInsertError } = await db
@@ -251,12 +246,7 @@ export async function enrollMember(input: EnrollMemberInput) {
   // 5. If initial payment was made, log in payments table
   let receiptNo: string | null = null;
   if (paidAmount > 0) {
-    const { count: paymentCount } = await db
-      .from("payments")
-      .select("id", { count: "exact", head: true })
-      .eq("gym_id", gymId);
-
-    receiptNo = generateReceiptNo(paymentCount || 0);
+    receiptNo = await allocateNextReceiptNo(db, gymId);
 
     await db.from("payments").insert({
       gym_id: gymId,
@@ -369,12 +359,7 @@ export async function renewMember(input: RenewMemberInput) {
 
   // 5. Log payment if paid
   if (paid > 0) {
-    const { count: paymentCount } = await db
-      .from("payments")
-      .select("id", { count: "exact", head: true })
-      .eq("gym_id", gymId);
-
-    const receiptNo = generateReceiptNo(paymentCount || 0);
+    const receiptNo = await allocateNextReceiptNo(db, gymId);
 
     await db.from("payments").insert({
       gym_id: gymId,
@@ -507,12 +492,7 @@ export async function collectDues(input: CollectDuesInput) {
   }
 
   // 2. Insert payment receipt
-  const { count: paymentCount } = await db
-    .from("payments")
-    .select("id", { count: "exact", head: true })
-    .eq("gym_id", gymId);
-
-  const receiptNo = generateReceiptNo(paymentCount || 0);
+  const receiptNo = await allocateNextReceiptNo(db, gymId);
 
   const { data: newPayment } = await db
     .from("payments")

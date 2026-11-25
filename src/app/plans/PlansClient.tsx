@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { notifyLocalMutation } from "@/lib/realtime/syncStore";
 import { createPlan, togglePlanStatus, deletePlan, updatePlan } from "@/actions/plans";
 import { formatCurrency } from "@/lib/utils";
 import type { MembershipPlan } from "@/types/database";
@@ -23,7 +25,12 @@ interface PlansClientProps {
 }
 
 export function PlansClient({ initialPlans }: PlansClientProps) {
+  const router = useRouter();
   const [plans, setPlans] = useState<MembershipPlan[]>(initialPlans);
+
+  useEffect(() => {
+    setPlans(initialPlans);
+  }, [initialPlans]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<MembershipPlan | null>(null);
@@ -96,6 +103,7 @@ export function PlansClient({ initialPlans }: PlansClientProps) {
       if (res.plan) {
         setPlans((prev) => prev.map((p) => (p.id === editingPlan.id ? res.plan! : p)));
         setIsModalOpen(false);
+        notifyLocalMutation(router, "/plans");
       }
     } else {
       const res = await createPlan({
@@ -118,6 +126,7 @@ export function PlansClient({ initialPlans }: PlansClientProps) {
       if (res.plan) {
         setPlans((prev) => [...prev, res.plan!]);
         setIsModalOpen(false);
+        notifyLocalMutation(router, "/plans");
       }
     }
   }
@@ -128,6 +137,7 @@ export function PlansClient({ initialPlans }: PlansClientProps) {
       setPlans((prev) =>
         prev.map((p) => (p.id === planId ? { ...p, is_active: res.plan!.is_active } : p))
       );
+      notifyLocalMutation(router, "/plans");
     }
   }
 
@@ -136,6 +146,7 @@ export function PlansClient({ initialPlans }: PlansClientProps) {
     const res = await deletePlan(planId);
     if (res.success) {
       setPlans((prev) => prev.filter((p) => p.id !== planId));
+      notifyLocalMutation(router, "/plans");
     } else if (res.error) {
       alert(res.error);
     }

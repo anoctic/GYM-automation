@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { notifyLocalMutation } from "@/lib/realtime/syncStore";
 import { FitnessPlanetLogo } from "@/components/FitnessPlanetLogo";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils";
 import { checkOutMember, checkInMember } from "@/actions/attendance";
@@ -43,6 +45,7 @@ interface DashboardClientProps {
   activeSessions: AttendanceLog[];
   recentPayments: Payment[];
   leads: Lead[];
+  pendingAdmissionsCount?: number;
   financials: {
     totalRevenue: number;
     upiTotal: number;
@@ -61,8 +64,10 @@ export function DashboardClient({
   activeSessions: initialSessions,
   recentPayments,
   leads: initialLeads,
+  pendingAdmissionsCount = 0,
   financials,
 }: DashboardClientProps) {
+  const router = useRouter();
   const [activeSessions, setActiveSessions] = useState<AttendanceLog[]>(initialSessions);
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
 
@@ -92,6 +97,17 @@ export function DashboardClient({
   );
   const [collectAmount, setCollectAmount] = useState<number>(0);
   const [collectMethod, setCollectMethod] = useState<"UPI" | "CASH" | "BANK_TRANSFER">("UPI");
+
+  useEffect(() => {
+    if (!checkInMemberId && members[0]?.id) {
+      setCheckInMemberId(members[0].id);
+    }
+    if (!collectMemberId && members.length > 0) {
+      setCollectMemberId(
+        members.find((m) => Number(m.pending_dues) > 0)?.id || members[0].id
+      );
+    }
+  }, [members, checkInMemberId, collectMemberId]);
 
   // Lead form state
   const [leadName, setLeadName] = useState("");
@@ -125,6 +141,7 @@ export function DashboardClient({
     setActionLoading(false);
     if (res.success) {
       setActiveSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      notifyLocalMutation(router, "/");
       setStatusMessage("Member checked out successfully!");
       setTimeout(() => setStatusMessage(null), 3000);
     }
@@ -154,6 +171,7 @@ export function DashboardClient({
       };
       setActiveSessions((prev) => [sessionWithMember as AttendanceLog, ...prev]);
       setIsCheckInModalOpen(false);
+      notifyLocalMutation(router, "/");
       setStatusMessage("Member checked in to floor!");
       setTimeout(() => setStatusMessage(null), 3000);
     } else if (res.error) {
@@ -175,6 +193,7 @@ export function DashboardClient({
     if (res.success) {
       setIsCollectModalOpen(false);
       setCollectAmount(0);
+      notifyLocalMutation(router, "/");
       setStatusMessage(`Payment of ${formatCurrency(collectAmount)} collected!`);
       setTimeout(() => setStatusMessage(null), 3000);
     } else if (res.error) {
@@ -200,6 +219,7 @@ export function DashboardClient({
       setLeadName("");
       setLeadPhone("");
       setLeadNotes("");
+      notifyLocalMutation(router, "/");
       setStatusMessage("New CRM Lead added!");
       setTimeout(() => setStatusMessage(null), 3000);
     } else if (res.error) {
@@ -391,19 +411,36 @@ export function DashboardClient({
         </Link>
       </div>
 
-      {/* 3. SETUP PROGRESS BANNER (Matching Video) */}
-      <Link href="/more" prefetch={true} className="block">
-        <div className="setup-banner group">
-          <div className="flex items-center gap-3">
-            <div className="setup-check-circle">✓</div>
-            <div>
-              <div className="text-sm font-bold text-main">Set up your gym • 3/5</div>
-              <div className="text-xs text-muted-theme">Complete the remaining steps</div>
+      {/* 3. SETUP PROGRESS BANNER (Dynamic Real Completion) */}
+      {(() => {
+        const setupStepsDone = [
+          Boolean(gym.name && gym.phone && gym.address),
+          Boolean(gym.upi_primary_id),
+          plans.some((p) => p.is_active),
+          members.length > 0,
+          financials.totalRevenue > 0 || activeSessions.length > 0,
+        ].filter(Boolean).length;
+        return (
+          <Link href="/settings" prefetch={true} className="block">
+            <div className="setup-banner group">
+              <div className="flex items-center gap-3">
+                <div className="setup-check-circle">✓</div>
+                <div>
+                  <div className="text-sm font-bold text-main">
+                    Set up your gym • {setupStepsDone}/5
+                  </div>
+                  <div className="text-xs text-muted-theme">
+                    {setupStepsDone === 5
+                      ? "All core setup steps completed"
+                      : "Complete the remaining setup steps"}
+                  </div>
+                </div>
+              </div>
+              <span className="text-muted-theme text-lg font-bold group-hover:translate-x-1 transition-transform">›</span>
             </div>
-          </div>
-          <span className="text-muted-theme text-lg font-bold group-hover:translate-x-1 transition-transform">›</span>
-        </div>
-      </Link>
+          </Link>
+        );
+      })()}
 
       {/* 4. 3 PASTEL STATUS CARDS (Matching Video) */}
       <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
@@ -432,10 +469,12 @@ export function DashboardClient({
           <div className="text-base mb-1">📈</div>
           <div className="text-[13.5px] font-bold text-main">Reports</div>
         </Link>
-        <div className="mini-stat py-3.5 px-3">
-          <div className="num text-main">0</div>
+        <Link href="/admissions" prefetch={true} className="mini-stat block cursor-pointer py-3.5 px-3">
+          <div className={`num ${pendingAdmissionsCount > 0 ? "text-amber-600 dark:text-amber-400" : "text-main"}`}>
+            {pendingAdmissionsCount}
+          </div>
           <div className="lbl">Approvals pending</div>
-        </div>
+        </Link>
       </div>
 
       {/* 6. RECENT TRANSACTIONS (Matching Video) */}

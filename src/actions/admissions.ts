@@ -3,7 +3,7 @@
 import { getTenantContext } from "@/lib/tenant/context";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
-import { generateMemberCode, generateReceiptNo } from "@/lib/utils";
+import { allocateNextMemberCode, allocateNextReceiptNo } from "@/lib/db/sequences";
 import type { Admission, PaymentMethod } from "@/types/database";
 
 export interface SubmitAdmissionInput {
@@ -142,13 +142,8 @@ export async function approveAdmission(input: ApproveAdmissionInput) {
   const expiryDate = new Date(today);
   expiryDate.setDate(expiryDate.getDate() + durationDays);
 
-  // 3. Generate member code
-  const { count: memberCount } = await db
-    .from("members")
-    .select("id", { count: "exact", head: true })
-    .eq("gym_id", gymId);
-
-  const memberCode = generateMemberCode(memberCount || 0);
+  // 3. Generate collision-safe member code
+  const memberCode = await allocateNextMemberCode(db, gymId);
 
   // 4. Create member record
   const { data: member, error: memberError } = await db
@@ -179,12 +174,7 @@ export async function approveAdmission(input: ApproveAdmissionInput) {
 
   // 5. If initial payment received, log payment receipt
   if (paidAmount > 0) {
-    const { count: paymentCount } = await db
-      .from("payments")
-      .select("id", { count: "exact", head: true })
-      .eq("gym_id", gymId);
-
-    const receiptNo = generateReceiptNo(paymentCount || 0);
+    const receiptNo = await allocateNextReceiptNo(db, gymId);
 
     await db.from("payments").insert({
       gym_id: gymId,

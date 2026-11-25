@@ -5,6 +5,7 @@ import { getPayments } from "@/actions/payments";
 import { getMembers } from "@/actions/members";
 import { getPlans } from "@/actions/plans";
 import { getLeads } from "@/actions/leads";
+import { getAdmissions } from "@/actions/admissions";
 import { DashboardClient } from "./DashboardClient";
 import type { Gym } from "@/types/database";
 
@@ -20,12 +21,14 @@ export default async function DashboardPage() {
     { activeSessions },
     { payments },
     { leads },
+    { admissions: pendingAdmissions },
   ] = await Promise.all([
     getMembers(),
     getPlans(),
     getActiveFloorMembers(),
     getPayments(),
     getLeads(),
+    getAdmissions("pending"),
   ]);
 
   let totalRevenue = 0;
@@ -66,6 +69,7 @@ export default async function DashboardPage() {
       activeSessions={activeSessions}
       recentPayments={payments.slice(0, 5)}
       leads={leads}
+      pendingAdmissionsCount={pendingAdmissions.length}
       financials={financials}
     />
   );

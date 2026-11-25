@@ -166,6 +166,7 @@ export async function kioskToggleCheckInOut(
     safeRevalidatePath("/attendance");
     safeRevalidatePath("/floor");
     safeRevalidatePath("/members");
+    safeRevalidatePath("/notifications");
     safeRevalidatePath("/");
 
     return {
@@ -239,6 +240,7 @@ export async function kioskToggleCheckInOut(
   safeRevalidatePath("/attendance");
   safeRevalidatePath("/floor");
   safeRevalidatePath("/members");
+  safeRevalidatePath("/notifications");
   safeRevalidatePath("/");
 
   return {
@@ -300,4 +302,26 @@ export async function getMemberActiveKioskSession(gymSlug: string, rawCode: stri
     memberName: member.full_name as string,
     memberCode: member.member_code as string,
   };
+}
+
+export async function getActiveFloorKioskSessions(gymId: string) {
+  const db = createAdminClient() as any;
+  const { data } = await db
+    .from("attendance_logs")
+    .select(`
+      *,
+      members (
+        id,
+        full_name,
+        member_code,
+        phone,
+        status,
+        pending_dues
+      )
+    `)
+    .eq("gym_id", gymId)
+    .is("check_out_at", null)
+    .order("check_in_at", { ascending: false });
+
+  return { activeSessions: (data as AttendanceLog[]) || [] };
 }

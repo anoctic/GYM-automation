@@ -43,8 +43,24 @@ export function formatTime(dateStr: string | null | undefined): string {
 }
 
 export function generateMemberCode(existingCount: number, prefix: string = "FP"): string {
-  const nextNum = 90 + existingCount + 1;
+  const nextNum = 100 + existingCount + 1;
   return `${prefix}-${nextNum}`;
+}
+
+export function getNextMemberCodePreview(
+  existingCodes: string[],
+  prefix: string = "FP"
+): string {
+  let maxNum = 100;
+  const regex = new RegExp(`^${prefix}-(\\d+)$`, "i");
+  for (const code of existingCodes) {
+    const match = code?.match(regex);
+    if (match) {
+      const n = parseInt(match[1], 10);
+      if (Number.isFinite(n) && n > maxNum) maxNum = n;
+    }
+  }
+  return `${prefix}-${maxNum + 1}`;
 }
 
 export function generateReceiptNo(existingCount: number): string {

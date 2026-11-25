@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { formatCurrency, formatDate, generateMemberCode } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { notifyLocalMutation } from "@/lib/realtime/syncStore";
+import { formatCurrency, formatDate, getNextMemberCodePreview } from "@/lib/utils";
 import {
   enrollMember,
   renewMember,
@@ -51,9 +53,26 @@ export function MembersClient({
   initialFilter,
   initialOpenEnroll = false,
 }: MembersClientProps) {
+  const router = useRouter();
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>(initialFilter || "all");
+
+  useEffect(() => {
+    setMembers(initialMembers);
+  }, [initialMembers]);
+
+  useEffect(() => {
+    if (initialFilter) {
+      setStatusFilter(initialFilter);
+    }
+  }, [initialFilter]);
+
+  useEffect(() => {
+    if (initialOpenEnroll) {
+      setIsEnrollModalOpen(true);
+    }
+  }, [initialOpenEnroll]);
   const [planFilter, setPlanFilter] = useState<string>("all");
   const [showArchived, setShowArchived] = useState(false);
 
@@ -73,8 +92,11 @@ export function MembersClient({
   // ENROLL FORM STATE (Printed Replica Form)
   // ==========================================
   const nextMemberCode = useMemo(() => {
-    return generateMemberCode(members.length, "FP");
-  }, [members.length]);
+    return getNextMemberCodePreview(
+      members.map((m) => m.member_code),
+      "FP"
+    );
+  }, [members]);
 
   const [fullName, setFullName] = useState("");
   const [fatherName, setFatherName] = useState("");
@@ -243,6 +265,7 @@ export function MembersClient({
       ]);
       setIsEnrollModalOpen(false);
       resetEnrollForm();
+      notifyLocalMutation(router, "/members");
       showToast(`Member enrolled successfully with code ${res.member.member_code}!`);
     }
   }
@@ -287,6 +310,7 @@ export function MembersClient({
         )
       );
       setIsRenewModalOpen(false);
+      notifyLocalMutation(router, "/members");
       showToast(`Membership renewed for ${activeMember.full_name}!`);
     } else if (res.error) {
       alert(res.error);
@@ -311,6 +335,7 @@ export function MembersClient({
         )
       );
       setIsDuesModalOpen(false);
+      notifyLocalMutation(router, "/members");
       showToast(`Collected ${formatCurrency(collectAmount)} for ${activeMember.full_name}!`);
     } else if (res.error) {
       alert(res.error);
@@ -321,6 +346,7 @@ export function MembersClient({
   async function handleQuickCheckIn(member: Member) {
     const res = await checkInMember(member.id, "FRONT_DESK");
     if (res.success && res.session) {
+      notifyLocalMutation(router, "/members");
       showToast(`${member.full_name} (${member.member_code}) checked in to floor!`);
     } else if (res.error) {
       alert(res.error);
@@ -334,6 +360,7 @@ export function MembersClient({
       setMembers((prev) =>
         prev.map((m) => (m.id === member.id ? { ...m, status: res.member!.status } : m))
       );
+      notifyLocalMutation(router, "/members");
       showToast(`Status updated to ${res.member.status.toUpperCase()}!`);
     }
   }
@@ -344,6 +371,7 @@ export function MembersClient({
     const res = await softDeleteMember(member.id);
     if (res.success) {
       setMembers((prev) => prev.filter((m) => m.id !== member.id));
+      notifyLocalMutation(router, "/members");
       showToast(`${member.full_name} moved to trash.`);
     } else if (res.error) {
       alert(res.error);
@@ -355,6 +383,7 @@ export function MembersClient({
     const res = await restoreMember(member.id);
     if (res.success) {
       setMembers((prev) => prev.filter((m) => m.id !== member.id));
+      notifyLocalMutation(router, "/members");
       showToast(`${member.full_name} restored to active directory!`);
     } else if (res.error) {
       alert(res.error);

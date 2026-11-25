@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { notifyLocalMutation } from "@/lib/realtime/syncStore";
 import { approveAdmission, rejectAdmission } from "@/actions/admissions";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils";
 import type { Admission, PaymentMethod } from "@/types/database";
@@ -36,12 +37,6 @@ export function AdmissionsClient({
   useEffect(() => {
     setAdmissions(initialAdmissions);
   }, [initialAdmissions]);
-
-  // Silently sync latest walk-in QR self-enrollments after instant mount
-  useEffect(() => {
-    const t = window.setTimeout(() => router.refresh(), 250);
-    return () => window.clearTimeout(t);
-  }, [router]);
   const [statusFilter, setStatusFilter] = useState("pending");
   const [approveModalItem, setApproveModalItem] = useState<Admission | null>(null);
 
@@ -85,6 +80,7 @@ export function AdmissionsClient({
         type: "success",
       });
       setApproveModalItem(null);
+      notifyLocalMutation(router, "/admissions");
     }
   }
 
@@ -98,6 +94,7 @@ export function AdmissionsClient({
       setAdmissions((prev) =>
         prev.map((a) => (a.id === admissionId ? { ...a, status: "rejected" } : a))
       );
+      notifyLocalMutation(router, "/admissions");
       setMessage({ text: "Admission marked as rejected.", type: "success" });
     } else if (res.error) {
       setMessage({ text: res.error, type: "error" });

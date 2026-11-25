@@ -102,6 +102,7 @@ export default async function RootLayout({
         <PwaRegister />
         <ThemeProvider>
           <AppShell
+            gymId={gym?.id}
             gymName={gym?.name || "Fitness Planet Unisex Gym"}
             gymSlug={gym?.slug || "fitness-planet-sikandrabad"}
             logoUrl={gym?.logo_url || "/fitness-planet-logo.png"}

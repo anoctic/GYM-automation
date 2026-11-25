@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { notifyLocalMutation } from "@/lib/realtime/syncStore";
 import QRCode from "qrcode";
 import { FitnessPlanetLogo } from "@/components/FitnessPlanetLogo";
 import { formatTime, formatDate } from "@/lib/utils";
@@ -77,13 +78,8 @@ export function AttendanceClient({
 
   useEffect(() => {
     setHistory(initialHistory);
+    setDateLogsCache({});
   }, [initialHistory]);
-
-  // Silently sync latest kiosk QR check-ins after instant mount
-  useEffect(() => {
-    const t = window.setTimeout(() => router.refresh(), 250);
-    return () => window.clearTimeout(t);
-  }, [router]);
 
   // Live 1s clock for running floor timers
   const [nowMs, setNowMs] = useState<number>(() => Date.now());
@@ -108,6 +104,12 @@ export function AttendanceClient({
   const [method, setMethod] = useState<AttendanceMethod>("FRONT_DESK");
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedMemberId && allMembers[0]?.id) {
+      setSelectedMemberId(allMembers[0].id);
+    }
+  }, [allMembers, selectedMemberId]);
 
   // Dual Desk QR Code State
   const [checkInQrUrl, setCheckInQrUrl] = useState<string | null>(null);
@@ -221,7 +223,9 @@ export function AttendanceClient({
 
       setActiveSessions((prev) => [newSession, ...prev]);
       setHistory((prev) => [newSession, ...prev]);
+      setDateLogsCache({});
       setIsCheckInModalOpen(false);
+      notifyLocalMutation(router, "/attendance");
       showToast(`${res.memberName} checked in! Workout timer started.`);
     }
   }
@@ -241,6 +245,8 @@ export function AttendanceClient({
         }
         return [res.log!, ...prev];
       });
+      setDateLogsCache({});
+      notifyLocalMutation(router, "/attendance");
       showToast(`Checked out ${memberName || "member"}. Timer stopped & workout saved!`);
     } else if (res.error) {
       alert(res.error);
@@ -263,6 +269,8 @@ export function AttendanceClient({
       setHistory((prev) =>
         prev.map((item) => (activeIds.has(item.id) ? { ...item, check_out_at: nowIso } : item))
       );
+      setDateLogsCache({});
+      notifyLocalMutation(router, "/attendance");
       showToast(`Bulk check-out complete! Stopped ${res.count} timers.`);
     } else if (res.error) {
       alert(res.error);

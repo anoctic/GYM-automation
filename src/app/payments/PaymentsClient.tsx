@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
+import { notifyLocalMutation } from "@/lib/realtime/syncStore";
 import { FitnessPlanetLogo } from "@/components/FitnessPlanetLogo";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils";
 import { collectDues } from "@/actions/members";
@@ -36,8 +38,17 @@ export function PaymentsClient({
   membersWithDues: initialDues,
   allMembers,
 }: PaymentsClientProps) {
+  const router = useRouter();
   const [payments, setPayments] = useState<Payment[]>(initialPayments);
   const [membersWithDues, setMembersWithDues] = useState<Member[]>(initialDues);
+
+  useEffect(() => {
+    setPayments(initialPayments);
+  }, [initialPayments]);
+
+  useEffect(() => {
+    setMembersWithDues(initialDues);
+  }, [initialDues]);
 
   const [activeTab, setActiveTab] = useState<"collections" | "outstanding">("collections");
   const [methodFilter, setMethodFilter] = useState<string>("all");
@@ -51,6 +62,11 @@ export function PaymentsClient({
 
   // Collect form state
   const [collectMemberId, setCollectMemberId] = useState(allMembers[0]?.id || "");
+  useEffect(() => {
+    if (!collectMemberId && allMembers[0]?.id) {
+      setCollectMemberId(allMembers[0].id);
+    }
+  }, [allMembers, collectMemberId]);
   const [collectAmount, setCollectAmount] = useState<number>(1000);
   const [collectMethod, setCollectMethod] = useState<PaymentMethod>("UPI");
   const [collectRef, setCollectRef] = useState("");
@@ -143,6 +159,7 @@ export function PaymentsClient({
       setIsCollectModalOpen(false);
       setCollectAmount(0);
       setCollectRef("");
+      notifyLocalMutation(router, "/payments");
       showToast(`Receipt created! Collected ${formatCurrency(collectAmount)}.`);
     } else if (res.error) {
       alert(res.error);

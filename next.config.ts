@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   experimental: {
     staleTimes: {
-      dynamic: 30,
-      static: 180,
+      dynamic: 15,
+      static: 60,
     },
   },
 };

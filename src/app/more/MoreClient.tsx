@@ -182,7 +182,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
               <div>
                 <div className="text-sm font-bold text-main">Membership Plans</div>
                 <div className="text-xs text-muted-theme">
-                  {plans.map((p) => `₹${p.price}`).slice(0, 4).join(" • ") || "₹999 • ₹2,599 • ₹4,999 • ₹9,999"}
+                  {plans.map((p) => `₹${p.price}`).slice(0, 4).join(" • ") || "No active plans configured yet"}
                 </div>
               </div>
             </div>
@@ -196,7 +196,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
               </div>
               <div>
                 <div className="text-sm font-bold text-main">Staff &amp; Trainers</div>
-                <div className="text-xs text-muted-theme">Kapil Rajput (Owner) • +91 9149183060</div>
+                <div className="text-xs text-muted-theme">{gym.owner_name || "Kapil Rajput"} (Owner) • {gymPhone}</div>
               </div>
             </div>
             <span className="owner-pill text-[10px]">Active</span>

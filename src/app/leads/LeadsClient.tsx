@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { notifyLocalMutation } from "@/lib/realtime/syncStore";
 import { createLead, updateLeadStage, deleteLead } from "@/actions/leads";
 import { formatDate } from "@/lib/utils";
 import type { Lead, LeadStage } from "@/types/database";
@@ -31,7 +33,12 @@ const STAGES: { stage: LeadStage; label: string; color: string }[] = [
 ];
 
 export function LeadsClient({ initialLeads }: LeadsClientProps) {
+  const router = useRouter();
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
+
+  useEffect(() => {
+    setLeads(initialLeads);
+  }, [initialLeads]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -58,6 +65,7 @@ export function LeadsClient({ initialLeads }: LeadsClientProps) {
       setName("");
       setPhone("");
       setNotes("");
+      notifyLocalMutation(router, "/leads");
     } else if (res.error) {
       alert(res.error);
     }
@@ -69,6 +77,7 @@ export function LeadsClient({ initialLeads }: LeadsClientProps) {
       setLeads((prev) =>
         prev.map((l) => (l.id === leadId ? { ...l, stage: newStage } : l))
       );
+      notifyLocalMutation(router, "/leads");
     }
   }
 
@@ -77,6 +86,7 @@ export function LeadsClient({ initialLeads }: LeadsClientProps) {
     const res = await deleteLead(leadId);
     if (res.success) {
       setLeads((prev) => prev.filter((l) => l.id !== leadId));
+      notifyLocalMutation(router, "/leads");
     }
   }
 

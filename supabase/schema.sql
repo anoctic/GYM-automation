@@ -185,3 +185,29 @@ CREATE INDEX IF NOT EXISTS idx_attendance_logs_active ON public.attendance_logs(
 CREATE INDEX IF NOT EXISTS idx_attendance_logs_recent ON public.attendance_logs(gym_id, check_in_at DESC);
 CREATE INDEX IF NOT EXISTS idx_gym_staff_gym_id ON public.gym_staff(gym_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_gym_id ON public.audit_logs(gym_id, created_at DESC);
+
+-- Enable Supabase Realtime publications across gym tables
+DO $$
+DECLARE
+  tbl text;
+BEGIN
+  FOREACH tbl IN ARRAY ARRAY[
+    'gyms',
+    'membership_plans',
+    'members',
+    'payments',
+    'attendance_logs',
+    'leads',
+    'admissions',
+    'gym_staff',
+    'audit_logs'
+  ]
+  LOOP
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_publication_tables
+      WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = tbl
+    ) THEN
+      EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE public.%I', tbl);
+    END IF;
+  END LOOP;
+END $$;

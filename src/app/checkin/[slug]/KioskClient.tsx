@@ -3,9 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import QRCode from "qrcode";
+import { createClient } from "@/lib/supabase/client";
 import {
   kioskToggleCheckInOut,
   getMemberActiveKioskSession,
+  getActiveFloorKioskSessions,
   type KioskCheckInResult,
 } from "@/actions/kiosk";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils";
@@ -120,6 +122,44 @@ export function KioskClient({
       }
     });
   }, [gymSlug, storageKey]);
+
+  // Real-time sync for Kiosk floor & active timers when Admin or another member checks in/out
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`kiosk-attendance-${gym.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "attendance_logs",
+          filter: `gym_id=eq.${gym.id}`,
+        },
+        async () => {
+          const { activeSessions: freshSessions } = await getActiveFloorKioskSessions(gym.id);
+          setActiveSessions(freshSessions);
+
+          if (typeof window !== "undefined") {
+            const savedCode = localStorage.getItem(storageKey);
+            if (savedCode) {
+              const res = await getMemberActiveKioskSession(gymSlug, savedCode);
+              if (res.activeSession) {
+                setPersonalActiveSession(res.activeSession);
+              } else {
+                setPersonalActiveSession(null);
+                localStorage.removeItem(storageKey);
+              }
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [gym.id, gymSlug, storageKey]);
 
   const executeToggle = useCallback(
     async (codeToUse: string) => {
