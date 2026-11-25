@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { getGymDetails } from "@/actions/gym";
 import { getStaffMembers } from "@/actions/staff";
 import { getAdminCredentialsInfo } from "@/actions/security";
 import { getAuditLogs } from "@/lib/audit/logger";
@@ -7,15 +6,16 @@ import { getTenantContext } from "@/lib/tenant/context";
 import { SettingsClient } from "./SettingsClient";
 
 export default async function SettingsPage() {
-  const { isAuthenticated } = await getTenantContext();
+  const { gym, gymId, isAuthenticated } = await getTenantContext();
   if (!isAuthenticated) {
     redirect("/login");
   }
 
-  const { gym } = await getGymDetails();
-  const { staff } = await getStaffMembers();
-  const adminCredentials = await getAdminCredentialsInfo();
-  const auditLogs = await getAuditLogs(gym!.id, 50);
+  const [{ staff }, adminCredentials, auditLogs] = await Promise.all([
+    getStaffMembers(),
+    getAdminCredentialsInfo(),
+    getAuditLogs(gymId, 50),
+  ]);
 
   return (
     <SettingsClient

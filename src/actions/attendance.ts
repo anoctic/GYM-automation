@@ -164,6 +164,7 @@ export async function checkInMember(
   revalidatePath("/attendance");
   revalidatePath("/floor");
   revalidatePath("/members");
+  revalidatePath("/notifications");
   revalidatePath("/");
   return {
     success: true,
@@ -204,6 +205,7 @@ export async function checkOutMember(attendanceLogId: string) {
   revalidatePath("/attendance");
   revalidatePath("/floor");
   revalidatePath("/members");
+  revalidatePath("/notifications");
   revalidatePath("/");
   return { success: true, log: data as AttendanceLog };
 }

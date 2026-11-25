@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { getGymDetails } from "@/actions/gym";
 import { getMembers } from "@/actions/members";
 import { getTenantContext } from "@/lib/tenant/context";
 import { OutreachClient } from "./OutreachClient";
@@ -11,12 +10,11 @@ export const metadata: Metadata = {
 };
 
 export default async function OutreachPage() {
-  const { isAuthenticated } = await getTenantContext();
+  const { gym, isAuthenticated } = await getTenantContext();
   if (!isAuthenticated) {
     redirect("/login");
   }
 
-  const { gym } = await getGymDetails();
   const { members } = await getMembers();
 
   return <OutreachClient gym={gym!} members={members} />;

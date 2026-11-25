@@ -302,9 +302,13 @@ export async function enrollMember(input: EnrollMemberInput) {
     },
   });
 
+  revalidatePath("/");
   revalidatePath("/members");
   revalidatePath("/floor");
+  revalidatePath("/attendance");
   revalidatePath("/payments");
+  revalidatePath("/outreach");
+  revalidatePath("/notifications");
   return { success: true, member: member as Member };
 }
 
@@ -400,7 +404,11 @@ export async function renewMember(input: RenewMemberInput) {
     },
   });
 
+  revalidatePath("/");
   revalidatePath("/members");
+  revalidatePath("/payments");
+  revalidatePath("/outreach");
+  revalidatePath("/notifications");
   return { success: true, member: updatedMember as Member };
 }
 
@@ -452,7 +460,9 @@ export async function toggleMemberFreeze(memberId: string) {
     },
   });
 
+  revalidatePath("/");
   revalidatePath("/members");
+  revalidatePath("/outreach");
   return { success: true, member: data as Member };
 }
 
@@ -535,8 +545,11 @@ export async function collectDues(input: CollectDuesInput) {
     },
   });
 
+  revalidatePath("/");
   revalidatePath("/members");
   revalidatePath("/payments");
+  revalidatePath("/outreach");
+  revalidatePath("/notifications");
   return {
     success: true,
     member: updatedMember as Member,
@@ -598,7 +611,9 @@ export async function softDeleteMember(memberId: string) {
     },
   });
 
+  revalidatePath("/");
   revalidatePath("/members");
+  revalidatePath("/outreach");
   return { success: true, member: data as Member };
 }
 
@@ -649,6 +664,8 @@ export async function restoreMember(memberId: string) {
     },
   });
 
+  revalidatePath("/");
   revalidatePath("/members");
+  revalidatePath("/outreach");
   return { success: true, member: data as Member };
 }

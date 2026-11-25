@@ -64,7 +64,9 @@ export async function createPlan(input: CreatePlanInput) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/plans");
+  revalidatePath("/more");
   return { success: true, plan: data as MembershipPlan };
 }
 
@@ -97,7 +99,9 @@ export async function updatePlan(planId: string, input: UpdatePlanInput) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/plans");
+  revalidatePath("/more");
   return { success: true, plan: data as MembershipPlan };
 }
 
@@ -132,7 +136,9 @@ export async function togglePlanStatus(planId: string) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/plans");
+  revalidatePath("/more");
   return { success: true, plan: data as MembershipPlan };
 }
 
@@ -154,7 +160,9 @@ export async function deletePlan(planId: string) {
       .update({ is_active: false })
       .eq("id", planId)
       .eq("gym_id", gymId);
+    revalidatePath("/");
     revalidatePath("/plans");
+    revalidatePath("/more");
     return { success: true, message: "Plan deactivated because existing members reference it." };
   }
 
@@ -168,6 +176,8 @@ export async function deletePlan(planId: string) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/plans");
+  revalidatePath("/more");
   return { success: true };
 }

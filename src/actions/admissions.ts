@@ -207,9 +207,11 @@ export async function approveAdmission(input: ApproveAdmissionInput) {
     })
     .eq("id", admission.id);
 
+  revalidatePath("/");
   revalidatePath("/admissions");
   revalidatePath("/members");
   revalidatePath("/payments");
+  revalidatePath("/notifications");
   return { success: true, member, memberCode };
 }
 
@@ -235,6 +237,8 @@ export async function rejectAdmission(admissionId: string) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/admissions");
+  revalidatePath("/notifications");
   return { success: true, admission: data };
 }

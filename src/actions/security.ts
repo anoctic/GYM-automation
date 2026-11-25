@@ -6,7 +6,7 @@ import { getTenantContext } from "@/lib/tenant/context";
 import { createAdminSessionToken, SESSION_COOKIE_NAME } from "@/lib/auth/session";
 import { logAuditEvent } from "@/lib/audit/logger";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
 export interface AdminCredentialsInfo {
   username: string;
@@ -109,6 +109,8 @@ export async function updateAdminCredentials(input: {
     },
   });
 
+  updateTag("gym-context");
+  updateTag("gym-profile");
   revalidatePath("/", "layout");
   revalidatePath("/settings");
   return {

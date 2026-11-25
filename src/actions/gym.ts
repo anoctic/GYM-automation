@@ -4,7 +4,7 @@ import { getTenantContext } from "@/lib/tenant/context";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { logAuditEvent } from "@/lib/audit/logger";
 import { getCurrentUserRole } from "@/lib/auth/rbac";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import type { Gym, UpiSlot } from "@/types/database";
 
 export interface UpdateGymInput {
@@ -28,8 +28,11 @@ export interface UpdateGymInput {
 
 export async function getGymDetails() {
   const { gymId, gym } = await getTenantContext();
-  const db = createAdminClient() as any;
+  if (gym) {
+    return { gym };
+  }
 
+  const db = createAdminClient() as any;
   const { data, error } = await db
     .from("gyms")
     .select("*")
@@ -104,6 +107,11 @@ export async function updateGymSettings(input: UpdateGymInput) {
     },
   });
 
+  updateTag("gym-profile");
+  updateTag("gym-context");
   revalidatePath("/", "layout");
+  revalidatePath("/settings");
+  revalidatePath("/more");
+  revalidatePath("/outreach");
   return { success: true, gym: data as Gym };
 }

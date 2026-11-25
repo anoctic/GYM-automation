@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { approveAdmission, rejectAdmission } from "@/actions/admissions";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils";
 import type { Admission, PaymentMethod } from "@/types/database";
@@ -29,7 +30,18 @@ export function AdmissionsClient({
   initialAdmissions,
   gymId,
 }: AdmissionsClientProps) {
+  const router = useRouter();
   const [admissions, setAdmissions] = useState<Admission[]>(initialAdmissions);
+
+  useEffect(() => {
+    setAdmissions(initialAdmissions);
+  }, [initialAdmissions]);
+
+  // Silently sync latest walk-in QR self-enrollments after instant mount
+  useEffect(() => {
+    const t = window.setTimeout(() => router.refresh(), 250);
+    return () => window.clearTimeout(t);
+  }, [router]);
   const [statusFilter, setStatusFilter] = useState("pending");
   const [approveModalItem, setApproveModalItem] = useState<Admission | null>(null);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
@@ -14,6 +14,16 @@ interface AppShellProps {
   logoUrl?: string | null;
   userEmail?: string | null;
 }
+
+const PREFETCH_BATCH_1 = ["/", "/members", "/payments", "/leads", "/more"];
+const PREFETCH_BATCH_2 = [
+  "/attendance",
+  "/plans",
+  "/outreach",
+  "/settings",
+  "/notifications",
+  "/admissions",
+];
 
 export function AppShell({
   children,
@@ -31,6 +41,29 @@ export function AppShell({
     pathname.startsWith("/checkin") ||
     pathname.startsWith("/join") ||
     pathname === "/login";
+
+  // Proactively warm all admin routes in the Router Cache after initial paint
+  // so tapping any tab, drawer link, or Quick Action opens instantaneously.
+  useEffect(() => {
+    if (isPublicRoute) return;
+
+    const timer1 = window.setTimeout(() => {
+      PREFETCH_BATCH_1.forEach((route) => {
+        if (route !== pathname) router.prefetch(route);
+      });
+    }, 80);
+
+    const timer2 = window.setTimeout(() => {
+      PREFETCH_BATCH_2.forEach((route) => {
+        if (route !== pathname) router.prefetch(route);
+      });
+    }, 350);
+
+    return () => {
+      window.clearTimeout(timer1);
+      window.clearTimeout(timer2);
+    };
+  }, [isPublicRoute, pathname, router]);
 
   async function handleSignOut() {
     await signOut();

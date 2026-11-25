@@ -95,14 +95,20 @@ export async function signUp(formData: FormData) {
 }
 
 export async function signOut() {
-  try {
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-  } catch {
-    // Ignore if no Supabase user session exists
+  const cookieStore = await cookies();
+  const hasSbCookie = cookieStore
+    .getAll()
+    .some((c) => c.name.startsWith("sb-") && c.name.includes("auth-token") && !!c.value);
+
+  if (hasSbCookie) {
+    try {
+      const supabase = await createClient();
+      await supabase.auth.signOut();
+    } catch {
+      // Ignore if no Supabase user session exists
+    }
   }
 
-  const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
   cookieStore.delete("gymos_demo_mode");
 

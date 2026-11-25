@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { FitnessPlanetLogo } from "@/components/FitnessPlanetLogo";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils";
@@ -65,6 +65,14 @@ export function DashboardClient({
 }: DashboardClientProps) {
   const [activeSessions, setActiveSessions] = useState<AttendanceLog[]>(initialSessions);
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
+
+  useEffect(() => {
+    setActiveSessions(initialSessions);
+  }, [initialSessions]);
+
+  useEffect(() => {
+    setLeads(initialLeads);
+  }, [initialLeads]);
 
   // Quick Action Modals
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
@@ -256,6 +264,7 @@ export function DashboardClient({
               {withDuesCount > 0 && (
                 <Link
                   href="/payments"
+                  prefetch={true}
                   className="inline-flex items-center px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-500/20 hover:opacity-85 transition"
                 >
                   <AlertCircle className="w-3.5 h-3.5 mr-1 text-amber-500" />
@@ -264,6 +273,7 @@ export function DashboardClient({
               )}
               <Link
                 href="/members?filter=inactive"
+                prefetch={true}
                 className="inline-flex items-center px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 font-semibold border border-rose-200 dark:border-rose-500/20 hover:opacity-85 transition"
                 title="View members who haven't checked in for 3+ days"
               >
@@ -363,26 +373,26 @@ export function DashboardClient({
 
       {/* 2. 4 MINI KPI CARDS (Matching Video Grid) */}
       <div className="grid grid-cols-4 gap-2 sm:gap-2.5">
-        <Link href="/members" className="mini-stat block cursor-pointer">
+        <Link href="/members" prefetch={true} className="mini-stat block cursor-pointer">
           <div className="num text-[#16A34A]">{members.length}</div>
           <div className="lbl">Admission</div>
         </Link>
-        <Link href="/members" className="mini-stat block cursor-pointer">
+        <Link href="/members" prefetch={true} className="mini-stat block cursor-pointer">
           <div className="num text-[#2563EB]">{activeCount}</div>
           <div className="lbl">Renewal</div>
         </Link>
-        <Link href="/leads" className="mini-stat block cursor-pointer">
+        <Link href="/leads" prefetch={true} className="mini-stat block cursor-pointer">
           <div className="num text-[#D97706]">{leads.length}</div>
           <div className="lbl">Enquiry</div>
         </Link>
-        <Link href="/payments" className="mini-stat block cursor-pointer">
+        <Link href="/payments" prefetch={true} className="mini-stat block cursor-pointer">
           <div className="num text-[#7C3AED]">{recentPayments.length}</div>
           <div className="lbl">Due paid</div>
         </Link>
       </div>
 
       {/* 3. SETUP PROGRESS BANNER (Matching Video) */}
-      <Link href="/more" className="block">
+      <Link href="/more" prefetch={true} className="block">
         <div className="setup-banner group">
           <div className="flex items-center gap-3">
             <div className="setup-check-circle">✓</div>
@@ -397,19 +407,19 @@ export function DashboardClient({
 
       {/* 4. 3 PASTEL STATUS CARDS (Matching Video) */}
       <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-        <Link href="/payments" className="mini-stat pastel-red block cursor-pointer">
+        <Link href="/payments" prefetch={true} className="mini-stat pastel-red block cursor-pointer">
           <div className="text-sm mb-1">💳</div>
           <div className="num">{withDuesCount}</div>
           <div className="lbl opacity-85">Overdue</div>
         </Link>
 
-        <Link href="/members" className="mini-stat pastel-amber block cursor-pointer">
+        <Link href="/members" prefetch={true} className="mini-stat pastel-amber block cursor-pointer">
           <div className="text-sm mb-1">🕒</div>
           <div className="num">{expiringMembers.length}</div>
           <div className="lbl opacity-85">Expiring</div>
         </Link>
 
-        <Link href="/attendance" className="mini-stat pastel-blue block cursor-pointer">
+        <Link href="/attendance" prefetch={true} className="mini-stat pastel-blue block cursor-pointer">
           <div className="text-sm mb-1">✅</div>
           <div className="num">{activeSessions.length}</div>
           <div className="lbl opacity-85">Attendance</div>
@@ -418,7 +428,7 @@ export function DashboardClient({
 
       {/* 5. 2 ROW: REPORTS & APPROVALS */}
       <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-        <Link href="/payments" className="mini-stat block cursor-pointer py-3.5 px-3">
+        <Link href="/payments" prefetch={true} className="mini-stat block cursor-pointer py-3.5 px-3">
           <div className="text-base mb-1">📈</div>
           <div className="text-[13.5px] font-bold text-main">Reports</div>
         </Link>

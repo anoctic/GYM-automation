@@ -11,8 +11,10 @@ export default async function PaymentsPage() {
     redirect("/login");
   }
 
-  const { payments } = await getPayments();
-  const { members } = await getMembers();
+  const [{ payments }, { members }] = await Promise.all([
+    getPayments(),
+    getMembers(),
+  ]);
 
   const membersWithDues = members.filter((m) => Number(m.pending_dues) > 0);
 

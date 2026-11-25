@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppShell } from "@/components/AppShell";
 import { PwaRegister } from "@/components/PwaRegister";
-import { getTenantContext } from "@/lib/tenant/context";
+import { getDefaultGymShell } from "@/lib/tenant/context";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -59,12 +59,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { gym, adminSession, user } = await getTenantContext();
-  const displayEmail =
-    adminSession?.email ||
-    user?.email ||
-    gym?.email ||
-    "fitnessplanet.sikandrabad@gmail.com";
+  const { gym, authEmail } = await getDefaultGymShell();
+  const displayEmail = authEmail || gym?.email || "fitnessplanet.sikandrabad@gmail.com";
 
   return (
     <html

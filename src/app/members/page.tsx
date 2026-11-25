@@ -14,9 +14,11 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
     redirect("/login");
   }
 
-  const sp = await searchParams;
-  const { members } = await getMembers();
-  const { plans } = await getPlans();
+  const [sp, { members }, { plans }] = await Promise.all([
+    searchParams,
+    getMembers(),
+    getPlans(),
+  ]);
 
   return (
     <MembersClient

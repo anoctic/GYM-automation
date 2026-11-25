@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,43 +13,54 @@ import {
 
 export function BottomTabBar() {
   const pathname = usePathname();
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
 
-  // 5 destinations matching the video/HTML mockup
+  useEffect(() => {
+    setPendingHref(null);
+  }, [pathname]);
+
+  const effectivePath = pendingHref ?? pathname;
+
   const destinations = [
     {
       id: "dashboard",
       name: "Dashboard",
       href: "/",
       icon: LayoutDashboard,
-      isActive: pathname === "/",
+      isActive: effectivePath === "/",
     },
     {
       id: "members",
       name: "Members",
       href: "/members",
       icon: Users,
-      isActive: pathname.startsWith("/members"),
+      isActive: effectivePath.startsWith("/members"),
     },
     {
       id: "fees",
       name: "Fees",
       href: "/payments",
       icon: CreditCard,
-      isActive: pathname.startsWith("/payments"),
+      isActive: effectivePath.startsWith("/payments"),
     },
     {
       id: "leads",
       name: "Leads",
       href: "/leads",
       icon: Target,
-      isActive: pathname.startsWith("/leads"),
+      isActive: effectivePath.startsWith("/leads"),
     },
     {
       id: "more",
       name: "More",
       href: "/more",
       icon: Grid,
-      isActive: pathname.startsWith("/more") || pathname.startsWith("/settings"),
+      isActive:
+        effectivePath.startsWith("/more") ||
+        effectivePath.startsWith("/settings") ||
+        effectivePath.startsWith("/plans") ||
+        effectivePath.startsWith("/outreach") ||
+        effectivePath.startsWith("/admissions"),
     },
   ];
 
@@ -71,8 +82,9 @@ export function BottomTabBar() {
             key={tab.id}
             href={tab.href}
             prefetch={true}
+            onClick={() => setPendingHref(tab.href)}
             aria-current={active ? "page" : undefined}
-            className={`bnav-item select-none transition-all duration-200 ease-out active:scale-95 ${
+            className={`bnav-item select-none transition-all duration-150 ease-out active:scale-95 ${
               active ? "active" : ""
             }`}
           >

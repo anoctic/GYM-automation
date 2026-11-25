@@ -11,10 +11,12 @@ export default async function AttendancePage() {
     redirect("/login");
   }
 
-  const { activeSessions } = await getActiveFloorMembers();
-  const histRes = await getAttendanceHistory(250);
+  const [{ activeSessions }, histRes, { members }] = await Promise.all([
+    getActiveFloorMembers(),
+    getAttendanceHistory(250),
+    getMembers(),
+  ]);
   const history = histRes.logs || [];
-  const { members } = await getMembers();
 
   return (
     <AttendanceClient

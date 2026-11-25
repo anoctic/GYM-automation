@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import { FitnessPlanetLogo } from "@/components/FitnessPlanetLogo";
 import { formatTime, formatDate } from "@/lib/utils";
@@ -65,9 +66,24 @@ export function AttendanceClient({
   allMembers,
   initialHistory,
 }: AttendanceClientProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"today" | "history">("today");
   const [activeSessions, setActiveSessions] = useState<AttendanceLog[]>(initialActiveSessions);
   const [history, setHistory] = useState<AttendanceLog[]>(initialHistory);
+
+  useEffect(() => {
+    setActiveSessions(initialActiveSessions);
+  }, [initialActiveSessions]);
+
+  useEffect(() => {
+    setHistory(initialHistory);
+  }, [initialHistory]);
+
+  // Silently sync latest kiosk QR check-ins after instant mount
+  useEffect(() => {
+    const t = window.setTimeout(() => router.refresh(), 250);
+    return () => window.clearTimeout(t);
+  }, [router]);
 
   // Live 1s clock for running floor timers
   const [nowMs, setNowMs] = useState<number>(() => Date.now());

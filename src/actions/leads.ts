@@ -59,7 +59,9 @@ export async function createLead(input: CreateLeadInput) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/leads");
+  revalidatePath("/notifications");
   return { success: true, lead: data as Lead };
 }
 
@@ -82,7 +84,9 @@ export async function updateLeadStage(leadId: string, stage: LeadStage) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/leads");
+  revalidatePath("/notifications");
   return { success: true, lead: data as Lead };
 }
 
@@ -100,6 +104,8 @@ export async function deleteLead(leadId: string) {
     return { error: error.message };
   }
 
+  revalidatePath("/");
   revalidatePath("/leads");
+  revalidatePath("/notifications");
   return { success: true };
 }

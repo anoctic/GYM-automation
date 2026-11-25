@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FitnessPlanetLogo } from "./FitnessPlanetLogo";
@@ -48,6 +48,13 @@ export function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPendingHref(null);
+  }, [pathname]);
+
+  const effectivePath = pendingHref ?? pathname;
 
   const navItems = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -130,17 +137,21 @@ export function Sidebar({
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
           {navItems.map((item) => {
             const isActive =
-              pathname === item.href ||
-              (item.href !== "/" && pathname.startsWith(item.href)) ||
-              (item.href === "/attendance" && pathname.startsWith("/floor"));
+              effectivePath === item.href ||
+              (item.href !== "/" && effectivePath.startsWith(item.href)) ||
+              (item.href === "/attendance" && effectivePath.startsWith("/floor"));
             const Icon = item.icon;
 
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                onClick={onClose}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition group ${
+                prefetch={true}
+                onClick={() => {
+                  setPendingHref(item.href);
+                  onClose();
+                }}
+                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors duration-100 group active:scale-[0.98] ${
                   isActive
                     ? "bg-[#111214] text-white dark:bg-[#C6F459] dark:text-[#111214] shadow-xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-[#111214] dark:hover:text-white hover:bg-[#F3F3F5] dark:hover:bg-[#1E2128]"

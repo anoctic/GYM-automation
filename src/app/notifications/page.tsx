@@ -11,10 +11,12 @@ export default async function NotificationsPage() {
     redirect("/login");
   }
 
-  const { members } = await getMembers();
-  const { activeSessions } = await getActiveFloorMembers();
-  const { history } = await getAttendanceHistory(10);
-  const { leads } = await getLeads();
+  const [{ members }, { activeSessions }, { history }, { leads }] = await Promise.all([
+    getMembers(),
+    getActiveFloorMembers(),
+    getAttendanceHistory(10),
+    getLeads(),
+  ]);
 
   return (
     <NotificationsClient

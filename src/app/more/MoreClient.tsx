@@ -97,7 +97,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
       <div>
         <div className="more-group-title">Money</div>
         <div className="more-list">
-          <Link href="/payments" className="more-row">
+          <Link href="/payments" prefetch={true} className="more-row">
             <div className="flex items-center gap-3">
               <div className="more-icon bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600">
                 <CreditCard className="w-4 h-4" />
@@ -129,7 +129,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
       <div>
         <div className="more-group-title">Operations</div>
         <div className="more-list">
-          <Link href="/attendance" className="more-row">
+          <Link href="/attendance" prefetch={true} className="more-row">
             <div className="flex items-center gap-3">
               <div className="more-icon bg-blue-50 dark:bg-blue-950/40 text-blue-600">
                 <Clock className="w-4 h-4" />
@@ -155,7 +155,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
             <ChevronRight className="w-4 h-4 text-muted-theme" />
           </button>
 
-          <Link href="/payments" className="more-row">
+          <Link href="/payments" prefetch={true} className="more-row">
             <div className="flex items-center gap-3">
               <div className="more-icon bg-amber-50 dark:bg-amber-950/40 text-amber-600">
                 <BarChart3 className="w-4 h-4" />
@@ -174,7 +174,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
       <div>
         <div className="more-group-title">Team &amp; Plans</div>
         <div className="more-list">
-          <Link href="/plans" className="more-row">
+          <Link href="/plans" prefetch={true} className="more-row">
             <div className="flex items-center gap-3">
               <div className="more-icon bg-pink-50 dark:bg-pink-950/40 text-pink-600">
                 <Dumbbell className="w-4 h-4" />
@@ -208,7 +208,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
       <div>
         <div className="more-group-title">Setup &amp; Account</div>
         <div className="more-list">
-          <Link href="/outreach" className="more-row">
+          <Link href="/outreach" prefetch={true} className="more-row">
             <div className="flex items-center gap-3">
               <div className="more-icon bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600">
                 <MessageCircle className="w-4 h-4" />
@@ -221,7 +221,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
             <ChevronRight className="w-4 h-4 text-muted-theme" />
           </Link>
 
-          <Link href="/settings" className="more-row">
+          <Link href="/settings" prefetch={true} className="more-row">
             <div className="flex items-center gap-3">
               <div className="more-icon bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
                 <Building className="w-4 h-4" />
@@ -234,7 +234,7 @@ export function MoreClient({ gym, plans }: MoreClientProps) {
             <ChevronRight className="w-4 h-4 text-muted-theme" />
           </Link>
 
-          <Link href="/settings" className="more-row">
+          <Link href="/settings" prefetch={true} className="more-row">
             <div className="flex items-center gap-3">
               <div className="more-icon bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600">
                 <ShieldCheck className="w-4 h-4" />

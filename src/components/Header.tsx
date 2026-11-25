@@ -75,6 +75,7 @@ export function Header({
         {/* Electric Lime Bell Button with Red Unread Dot */}
         <Link
           href="/notifications"
+          prefetch={true}
           className="lime-bell-btn"
           title="Notifications & Alerts"
         >
